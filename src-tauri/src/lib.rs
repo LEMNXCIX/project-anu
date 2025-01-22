@@ -1,6 +1,5 @@
 // Learn more about Tauri commands at https://tauri.app/develop/calling-rust/
 
-use log::{error, info};
 mod file_system;
 mod utils;
 
