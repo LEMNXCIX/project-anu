@@ -45,7 +45,7 @@ export default function MainPage() {
     <>
       <div className="w-2/3 justify-center mx-auto">
         <h1 className="mt-4 font-bold text-4xl p-14 text-center">
-        𒀭 Proyect ANU
+        𒀭 Project ANU
         </h1>
         <CreateNewProyect />
         <h1 className="mt-1 font-bold text-3xl p-10 text-center">Proyectos</h1>

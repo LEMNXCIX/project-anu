@@ -2,5 +2,5 @@
 #![cfg_attr(not(debug_assertions), windows_subsystem = "windows")]
 
 fn main() {
-    personal_proyects_files_managment_lib::run()
+    project_anu_lib::run()
 }

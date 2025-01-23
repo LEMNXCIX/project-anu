@@ -1,8 +1,8 @@
 {
   "$schema": "https://schema.tauri.app/config/2",
-  "productName": "personal-proyects-files-managment",
+  "productName": "project-anu",
   "version": "0.1.0",
-  "identifier": "com.personal-proyects-files-managment.app",
+  "identifier": "com.project-anu.app",
   "build": {
     "beforeDevCommand": "npm run dev",
     "devUrl": "http://localhost:1420",
@@ -14,7 +14,7 @@
     "withGlobalTauri": true,
     "windows": [
       {
-        "title": "Proyects Files Managment",
+        "title": "Project ANU",
         "width": 800,
         "height": 600
       }
