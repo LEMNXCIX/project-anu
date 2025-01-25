@@ -4,13 +4,16 @@ import App from "./App";
 import { BrowserRouter } from "react-router-dom";
 import { NextUIProvider } from "@heroui/react";
 import "./index.css";
+import { DirectoryProvider } from "./context/directoryContex";
 
 ReactDOM.createRoot(document.getElementById("root") as HTMLElement).render(
   <React.StrictMode>
-     <BrowserRouter>
-        <NextUIProvider>
-          <App />
-        </NextUIProvider>
-      </BrowserRouter>
+    <DirectoryProvider>
+        <BrowserRouter>
+            <NextUIProvider>
+            <App />
+            </NextUIProvider>
+        </BrowserRouter>
+    </DirectoryProvider>
   </React.StrictMode>,
 );

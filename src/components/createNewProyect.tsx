@@ -3,50 +3,60 @@ import {
   Alert,
   Button,
   ButtonGroup,
-  Form,
   Input,
   Spacer,
   Tooltip,
 } from "@heroui/react";
 import { FixName, NewProyect } from "../resources/svgIcons";
-import { error } from "console";
+import { tauriService } from "../services/tauriService";
 import { invoke } from "@tauri-apps/api/core";
+import { DefaultResult, TauriResponse, createTauriResponse } from "../types/tauriResponse.d";
+import { useListDirectory } from "../hooks/useDirectory";
 
 export default function CreateNewProyect() {
-  type submitState = {
-    submitted: false;
-    success: false;
-    error: false;
-    message: "";
+  type submitState = TauriResponse<any> & {
+    submitted: boolean;
   };
 
-  const defaultSubmitState = {
+  const tauriResponse = createTauriResponse();
+  const defaultSubmitState: submitState = {
+    ...tauriResponse,
     submitted: false,
-    success: false,
-    error: false,
-    message: "",
   };
-  const [submitted, setSubmitted] = useState(defaultSubmitState);
-
+  const [submittedState, setSubmittedState] = useState(defaultSubmitState);
+  const { listDirectory } = useListDirectory();
   const onSubmit = async (e: any) => {
-    e.preventDefault();
-    var newSubmitState = defaultSubmitState;
+    try {
+      e.preventDefault();
+      const form = e.target;
+      const formData = new FormData(form);
 
-    const form = e.target;
-    const formData = new FormData(form);
+      const name = formData.get("projectName") as string;
+      const response = await tauriService.exec_tauri_command(
+        "create_directory_command",
+        { name: name }
+      );
 
-    const name = formData.get("projectName") as string;
-    const res = await invoke("create_directory", { path: name });
-    if (name === "") {
-      newSubmitState.success = false;
-      newSubmitState.message = "El nombre del proyecto no puede estar vacío";
+      if (response.error) {
+        submittedState.message = response.message;
+        setSubmittedState({ ...submittedState, submitted: true });
+        return;
+      }
+
+      //Se actualiza la lista de directorios
+      listDirectory();
+
+      submittedState.success = response.success;
+      submittedState.message = response.message;
+      setSubmittedState({ ...submittedState, submitted: true });
+    } catch (error) {
+      submittedState.success = false;
+      submittedState.message = error;
+      setSubmittedState({ ...submittedState, submitted: true });
     }
-    newSubmitState.success = true;
-    newSubmitState.message = "Se creo el directorio para el proyecto";
-    setSubmitted({ ...newSubmitState, submitted: true });
-    console.log("Nombre del proyecto formateado:", res);
+
     setTimeout(() => {
-      setSubmitted(defaultSubmitState);
+      setSubmittedState(defaultSubmitState);
     }, 5000);
   };
   const getNewName = async () => {
@@ -54,25 +64,27 @@ export default function CreateNewProyect() {
       const form = document.querySelector("form");
       const formData = new FormData(form);
       const name = formData.get("projectName") as string;
-      const res = await invoke("format_name_project", { name: name });
-
-      navigator.clipboard.writeText(res.toString());
-      var newSubmitState = defaultSubmitState;
-      newSubmitState.success = true;
-      newSubmitState.message = "Se copio el nombre formateado al protapales:";
-      setSubmitted({ ...newSubmitState, submitted: true });
-      setTimeout(() => {
-        setSubmitted(defaultSubmitState);
-      }, 5000);
+      
+      const response = await tauriService.exec_tauri_command(
+        "format_name_project_command",
+        { name: name }
+      ) as TauriResponse<DefaultResult<string>>;
+      const data = response.data ;
+      console.log(data.result);
+      navigator.clipboard.writeText(response.data.result);
+      submittedState.success = response.success;
+      submittedState.message =  response.message +"Se copio el nombre formateado al protapales:";
+      setSubmittedState({ ...submittedState, submitted: true });
+     
     } catch (error) {
-      var newSubmitState = defaultSubmitState;
-      newSubmitState.error = true;
-      newSubmitState.message = "Error al formatear el nombre del proyecto: " + error;
-      setSubmitted({ ...newSubmitState, submitted: true });
-      setTimeout(() => {
-        setSubmitted(defaultSubmitState);
-      }, 5000);
+        submittedState.error = true;
+        submittedState.message =  "Error al formatear el nombre del proyecto: " + error;
+      setSubmittedState({ ...submittedState, submitted: true });
+
     }
+    setTimeout(() => {
+        setSubmittedState(defaultSubmitState);
+      }, 5000);
   };
   return (
     <>
@@ -81,8 +93,12 @@ export default function CreateNewProyect() {
         //validationBehavior="native"
         onSubmit={onSubmit}
       >
-        <Input name="projectName" placeholder="Nombre proyecto Gitlab" />
-        <ButtonGroup className="pl-2">
+        <Input
+          name="projectName"
+          placeholder="Nombre proyecto Gitlab"
+          radius="sm"
+        />
+        <ButtonGroup className="pl-2" radius="sm">
           <Tooltip showArrow content="Crear nuevo proyecto">
             <Button type="submit" isIconOnly>
               <NewProyect />
@@ -96,21 +112,21 @@ export default function CreateNewProyect() {
         </ButtonGroup>
       </form>
       <Spacer y={5} />
-      <div className="relative inset-0  h-3">
-        {submitted.submitted && (
+      <div className="relative inset-0 h-3">
+        {submittedState.submitted && (
           <Alert
             color={
-              submitted.error
+              submittedState.error
                 ? "danger"
-                : submitted.success
+                : submittedState.success
                 ? "success"
                 : "warning"
             }
-            description={submitted.message}
+            description={submittedState.message}
             title={
-              submitted.error
+              submittedState.error
                 ? "Error"
-                : submitted.success
+                : submittedState.success
                 ? "Éxito"
                 : "Advertencia"
             }
