@@ -9,7 +9,6 @@ import {
 } from "@heroui/react";
 import { FixName, NewProyect } from "../resources/svgIcons";
 import { tauriService } from "../services/tauriService";
-import { invoke } from "@tauri-apps/api/core";
 import { DefaultResult, TauriResponse, createTauriResponse } from "../types/tauriResponse.d";
 import { useListDirectory } from "../hooks/useDirectory";
 

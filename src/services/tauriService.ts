@@ -1,6 +1,6 @@
 import { invoke } from "@tauri-apps/api/core";
 import { createTauriResponse, TauriResponse } from "../types/tauriResponse.d";
-import UtilsService from "../services/UtilsService";
+import utilsService from "./utilsService";
 
 export const tauriService = {
   async exec_tauri_command<T>(
@@ -13,7 +13,7 @@ export const tauriService = {
       let tauriResponse = createTauriResponse();
       const response = (await invoke(command, args)) as string;
       //Validar si la respuesta es un json
-      if (UtilsService.isJSON(response)) {
+      if (utilsService.isJSON(response)) {
         tauriResponse = JSON.parse(response) as TauriResponse<T>;
       } else {
         if (response) {

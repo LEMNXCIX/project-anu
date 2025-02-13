@@ -1,4 +1,4 @@
-const UtilsService = {
+const utilsService = {
   formatearNombreProyecto(nombre: string): string {
     return nombre.replace(/ /g, "-").toLowerCase();
   },
@@ -14,4 +14,4 @@ const UtilsService = {
   },
 };
 
-export default UtilsService;
+export default utilsService;

@@ -18,6 +18,12 @@
         }
       ]
     },
-    "log:default"
+    "log:default",
+    "dialog:default",
+    "dialog:allow-ask",
+    "dialog:allow-message",
+    "updater:default",
+    "updater:allow-check",
+    "updater:allow-download-and-install"
   ]
 }

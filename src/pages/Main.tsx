@@ -1,19 +1,16 @@
-import { Accordion, AccordionItem } from "@heroui/accordion";
-import React, { useState, useEffect } from "react";
-import { readDir, BaseDirectory, exists } from "@tauri-apps/plugin-fs";
-import { Card, CardBody, CardFooter } from "@heroui/react";
+import { useEffect } from "react";
+import { Card, CardBody } from "@heroui/react";
 import CreateNewProyect from "../components/createNewProyect";
-import { invoke } from "@tauri-apps/api/core";
-import { tauriService } from "../services/tauriService";
-import { TauriResponse } from "../types/tauriResponse";
 import { useDirectory } from "../context/directoryContex";
 import { useListDirectory } from "../hooks/useDirectory";
+import { checkForAppUpdates } from "../services/updateService";
 
 export default function MainPage() {
   const { state, dispatch } = useDirectory();
   const { listDirectory } = useListDirectory();
-
+  
   useEffect(() => {
+    checkForAppUpdates(true);
     listDirectory();
   }, []);
   return (

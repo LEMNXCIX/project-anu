@@ -47,7 +47,11 @@ pub fn list_directory(path: &str) -> ResponseComand {
     };
 
     // Crear el path completo para "Repositories" dentro de la carpeta de descargas
-    let repo_path = base_dirs.home_dir().join("Downloads").join("Repositories").join(path);
+    let repo_path = base_dirs
+        .home_dir()
+        .join("Downloads")
+        .join("Repositories")
+        .join(path);
     info!("Obteniendo contenido del directorio: {:?}", repo_path);
 
     // Lee el contenido del directorio
@@ -98,7 +102,7 @@ pub fn list_directory(path: &str) -> ResponseComand {
 pub fn create_directory(path: &str) -> ResponseComand {
     let mut response = ResponseComand::new();
     info!("Creando carpeta para: {}", path);
-    
+
     //Se formatea el nombre del proyecto
     let name_formated = format_name_project(path);
     info!("Nombre formateado: {:?}", name_formated);
@@ -128,7 +132,11 @@ pub fn create_directory(path: &str) -> ResponseComand {
     };
 
     // Se crea el path completo para "Repositories" dentro de la carpeta de descargas
-    let repo_path = base_dirs.home_dir().join("Downloads").join("Repositories").join(&name_formated.unwrap());
+    let repo_path = base_dirs
+        .home_dir()
+        .join("Downloads")
+        .join("Repositories")
+        .join(&name_formated.unwrap());
 
     //Se verifica si el directorio ya existe
     let path = Path::new(&repo_path);

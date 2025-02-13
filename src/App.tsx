@@ -1,9 +1,10 @@
 import { Route, Routes } from "react-router-dom";
-import MainPage from "./pages/main.page";
+import MainPage from "./pages/Main";
 import { config } from "./config/enviromentConfig";
 
 
 function App() {
+    
   // Deshabilitar esto cuando se produzca el build
   if (config.ENVIROMENT != "DEV") {
     document.addEventListener(
