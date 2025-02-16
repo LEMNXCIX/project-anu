@@ -14,12 +14,14 @@ pub fn run() {
         .invoke_handler(tauri::generate_handler![
             comands::create_directory_command,
             comands::list_directory_command,
-            comands::format_name_project_command
+            comands::format_name_project_command,
+            comands::check_updates_comand,
+            comands::apply_update_comand
         ])
         .setup(|app| {
             let handle = app.handle().clone();
             tauri::async_runtime::spawn(async move {
-                update(handle).await.unwrap();
+                //update(handle).await.unwrap();
             });
             Ok(())
         })
@@ -29,10 +31,9 @@ pub fn run() {
 }
 
 async fn update(app: tauri::AppHandle) -> tauri_plugin_updater::Result<()> {
-    log::info!("checking for updates");
+    log::info!("Validando versiones nuevas");
     if let Some(update) = app.updater()?.check().await? {
         let mut downloaded = 0;
-
         // alternatively we could also call update.download() and update.install() separately
         update
             .download_and_install(
@@ -41,12 +42,12 @@ async fn update(app: tauri::AppHandle) -> tauri_plugin_updater::Result<()> {
                     println!("downloaded {downloaded} from {content_length:?}");
                 },
                 || {
-                    println!("download finished");
+                    println!("Finalizo la descarga");
                 },
             )
             .await?;
 
-        println!("update installed");
+        println!("Se instalo la actualización");
         app.restart();
     }
 

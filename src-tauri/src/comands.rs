@@ -1,8 +1,10 @@
 use crate::service::{
     file_system::{create_directory, list_directory},
     utils::format_name_project,
+    updater::{check_for_updates, apply_update},
 };
 use log::{error, info};
+use tauri::AppHandle;
 
 #[tauri::command]
 pub fn format_name_project_command(name: &str) -> Result<String, String> {
@@ -40,4 +42,28 @@ pub fn list_directory_command(name: &str) -> Result<String, String> {
     }
 
     Ok(serde_json::to_string(&name_response).unwrap())
+}
+
+#[tauri::command]
+pub async fn check_updates_comand(app: AppHandle) -> Result<String, String> {
+  let response = check_for_updates(app).await;
+  if response.error {
+    let error_message = &response.message;
+    error!("Error al verificar las actualizaciones: {}", error_message);
+    return Err(serde_json::to_string(&response).unwrap());
+  } else {
+    Ok(serde_json::to_string(&response).unwrap())
+  }
+}
+
+#[tauri::command]
+pub async fn apply_update_comand(app: AppHandle) -> Result<String, String> {
+  let response = apply_update(app).await;
+  if response.error {
+    let error_message = &response.message;
+    error!("Error al aplicar la actualización: {}", error_message);
+    return Err(serde_json::to_string(&response).unwrap());
+  } else {
+    Ok(serde_json::to_string(&response).unwrap())
+  }
 }

@@ -5,7 +5,7 @@ import utilsService from "./utilsService";
 export const tauriService = {
   async exec_tauri_command<T>(
     command: string,
-    args: any
+    args?: any
   ): Promise<TauriResponse<T>> {
     try {
       console.log("Ejecutando comando: " + command);
