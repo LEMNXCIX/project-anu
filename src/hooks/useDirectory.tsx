@@ -10,24 +10,9 @@ export const useListDirectory = () => {
 
   const listDirectory = useCallback(async () => {
     const res = (await tauriService.exec_tauri_command(
-      "list_directory_command",
-      { name: "" }
+      "list_directory_command"
     )) as TauriResponse<ListDirectory>;
-    const update = (await tauriService.exec_tauri_command(
-      "check_updates_comand"
-    )) as TauriResponse<string>;
-    console.log(update);
-    if (update.data) {
-        console.log("Hay una actualización disponible");
-        console.log(update.data);
-        window.setTimeout(async () => {
-            const applyUpdate = await tauriService.exec_tauri_command(
-              "apply_update_comand"
-            );
-            console.log(applyUpdate);
-          }, 1000);
-        
-    }
+
     let entries = res.data.entries;
     dispatch({ type: "SET_ITEMS", payload: entries });
   }, [dispatch]);
