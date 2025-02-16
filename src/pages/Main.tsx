@@ -10,7 +10,6 @@ export default function MainPage() {
   const { listDirectory } = useListDirectory();
   
   useEffect(() => {
-    //checkForAppUpdates(true);
     listDirectory();
   }, []);
   return (

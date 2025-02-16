@@ -3,7 +3,6 @@ import { useDirectory } from "../context/directoryContex";
 import { tauriService } from "../services/tauriService";
 import { TauriResponse } from "../types/tauriResponse";
 import { ListDirectory } from "../types/directory";
-// import { setTimeout } from "node:timers/promises";
 
 export const useListDirectory = () => {
   const { dispatch } = useDirectory();
