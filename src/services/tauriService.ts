@@ -24,7 +24,7 @@ export const tauriService = {
 
       return tauriResponse;
     } catch (error) {
-      console.error("El comando: " + command + " no pudo ser ejecutado");
+      console.error("El comando: " + command + " no pudo ser ejecutado: " + error);
       let tauriResponse = createTauriResponse();
       tauriResponse.error = true;
       tauriResponse.message = "Error al ejecutar el comando: " + command;

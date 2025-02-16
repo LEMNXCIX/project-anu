@@ -9,7 +9,8 @@ export const useListDirectory = () => {
 
   const listDirectory = useCallback(async () => {
     const res = (await tauriService.exec_tauri_command(
-      "list_directory_command"
+      "list_directory_command",
+      { name: "" }
     )) as TauriResponse<ListDirectory>;
 
     let entries = res.data.entries;
