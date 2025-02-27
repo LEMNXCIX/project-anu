@@ -104,13 +104,23 @@ pub fn create_directory(path: &str) -> ResponseComand {
     info!("Creando carpeta para: {}", path);
 
     //Se formatea el nombre del proyecto
-    let name_formated = format_name_project(path);
+    let mut name_formated = format_name_project(path);
     info!("Nombre formateado: {:?}", name_formated);
     if name_formated.is_err() {
         let error_message = name_formated.err().unwrap();
         error!("Error al crear el directorio: {}", error_message);
         response.message = error_message;
         return response;
+    }
+    //Validar solo para windows
+    if cfg!(target_os = "windows") {
+        name_formated = sanitize_filename(name_formated.unwrap().as_str());
+        if name_formated.is_err() {
+            let error_message = name_formated.err().unwrap();
+            error!("Error al crear el directorio: {}", error_message);
+            response.message = error_message;
+            return response;
+        }
     }
     let name_formated = sanitize_filename(name_formated.unwrap().as_str());
     if name_formated.is_err() {
