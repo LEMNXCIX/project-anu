@@ -1,16 +1,17 @@
 import React, { useState } from "react";
 import {
-  Alert,
-  Button,
-  ButtonGroup,
-  Input,
-  Spacer,
-  Tooltip,
-} from "@heroui/react";
-import { FixName, NewProyect } from "../resources/svgIcons";
-import { tauriService } from "../services/tauriService";
-import { DefaultResult, TauriResponse, createTauriResponse } from "../types/tauriResponse.d";
-import { useListDirectory } from "../hooks/useDirectory";
+    Alert,
+    AlertDescription,
+    AlertTitle,
+  } from "@/components/ui/alert"
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input"
+import { FolderPlusIcon, WandSparklesIcon } from "lucide-react"
+
+import { FixName, NewProyect } from "@/resources/svgIcons";
+import { tauriService } from "@/services/tauriService";
+import { DefaultResult, TauriResponse, createTauriResponse } from "@/types/tauriResponse.d";
+import { useListDirectory } from "@/hooks/useDirectory";
 
 export default function CreateNewProyect() {
   type submitState = TauriResponse<any> & {
@@ -69,7 +70,7 @@ export default function CreateNewProyect() {
         { name: name }
       ) as TauriResponse<DefaultResult<string>>;
       const data = response.data ;
-      console.log(data.result);
+
       navigator.clipboard.writeText(response.data.result);
       submittedState.success = response.success;
       submittedState.message =  response.message +"Se copio el nombre formateado al protapales:";
@@ -95,45 +96,51 @@ export default function CreateNewProyect() {
         <Input
           name="projectName"
           placeholder="Nombre proyecto Gitlab"
-          radius="sm"
         />
-        <ButtonGroup className="pl-2" radius="sm">
-          <Tooltip showArrow content="Crear nuevo proyecto">
-            <Button type="submit" isIconOnly>
-              <NewProyect />
+
+        
+            <Button type="submit" variant="outline" size="icon">
+              <FolderPlusIcon />
             </Button>
-          </Tooltip>
-          <Tooltip showArrow content="Formatear nombre de proyecto">
-            <Button isIconOnly onPress={getNewName}>
-              <FixName />
+         
+          
+            <Button variant="secondary" size="icon" onClick={getNewName}>
+              <WandSparklesIcon />
             </Button>
-          </Tooltip>
-        </ButtonGroup>
+          
+
       </form>
-      <Spacer y={5} />
+
       <div className="relative inset-0 h-3">
         {submittedState.submitted && (
-          <Alert
-            color={
-              submittedState.error
-                ? "danger"
-                : submittedState.success
-                ? "success"
-                : "warning"
-            }
-            description={submittedState.message}
-            title={
-              submittedState.error
-                ? "Error"
-                : submittedState.success
-                ? "Éxito"
-                : "Advertencia"
-            }
-            variant="faded"
-          />
+            <Alert>
+            
+            <AlertTitle>Heads up!</AlertTitle>
+            <AlertDescription>
+              You can add components to your app using the cli.
+            </AlertDescription>
+          </Alert>
+        //   <Alert
+        //     color={
+        //       submittedState.error
+        //         ? "danger"
+        //         : submittedState.success
+        //         ? "success"
+        //         : "warning"
+        //     }
+        //     description={submittedState.message}
+        //     title={
+        //       submittedState.error
+        //         ? "Error"
+        //         : submittedState.success
+        //         ? "Éxito"
+        //         : "Advertencia"
+        //     }
+        //     variant="faded"
+        //   />
         )}
       </div>
-      <Spacer y={4} />
+
     </>
   );
 }

@@ -1,6 +1,6 @@
 import { invoke } from "@tauri-apps/api/core";
 import { createTauriResponse, TauriResponse } from "../types/tauriResponse.d";
-import utilsService from "./utilsService";
+import utilsService from "@/services/UtilsService";
 
 export const tauriService = {
   async exec_tauri_command<T>(

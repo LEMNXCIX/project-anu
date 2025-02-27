@@ -1,5 +1,5 @@
 import React, { createContext, useReducer, useContext, ReactNode, Dispatch } from "react";
-import { DirectoryState, DirEntry } from "../types/directory";
+import { DirectoryState, DirEntry } from "@/types/directory";
 
 type Action = { type: "SET_ITEMS"; payload: DirEntry[] };
 

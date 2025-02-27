@@ -1,8 +1,8 @@
 import { useCallback, useEffect } from "react";
-import { useDirectory } from "../context/directoryContex";
-import { tauriService } from "../services/tauriService";
-import { TauriResponse } from "../types/tauriResponse";
-import { ListDirectory } from "../types/directory";
+import { useDirectory } from "@/context/directoryContex";
+import { tauriService } from "@/services/tauriService";
+import { TauriResponse } from "@/types/tauriResponse";
+import { ListDirectory } from "@/types/directory";
 
 export const useListDirectory = () => {
   const { dispatch } = useDirectory();
