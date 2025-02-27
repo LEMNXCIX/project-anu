@@ -1,6 +1,6 @@
-import { DirEntry, ListDirectory } from "../types/directory";
-import { TauriResponse } from "../types/tauriResponse";
-import { tauriService } from "./tauriService";
+import { DirEntry, ListDirectory } from "@/types/directory.d";
+import { TauriResponse } from "@/types/tauriResponse";
+import { tauriService } from "@/services/tauriService";
 
 export const DirectoryService = {
   async createDirectory(name: string): Promise<any> {},
