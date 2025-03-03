@@ -45,7 +45,7 @@
    },
    "devDependencies": {
       "@tailwindcss/typography": "^0.5.10",
-      "@tauri-apps/api": "^2.2.0",
+      "@tauri-apps/api": "^2.3.0",
       "@tauri-apps/cli": "^2.2.5",
       "@types/node": "^20.17.19",
       "@types/react": "^18.3.1",

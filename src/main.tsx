@@ -4,13 +4,16 @@ import App from "./App";
 import { BrowserRouter } from "react-router-dom";
 import "./index.css";
 import { DirectoryProvider } from "@/context/directoryContex";
+import { AppProvider } from "@/context/app_contex";
 
 ReactDOM.createRoot(document.getElementById("root") as HTMLElement).render(
   <React.StrictMode>
-    <DirectoryProvider>
-      <BrowserRouter>
-        <App />
-      </BrowserRouter>
-    </DirectoryProvider>
+    <AppProvider>
+      <DirectoryProvider>
+        <BrowserRouter>
+          <App />
+        </BrowserRouter>
+      </DirectoryProvider>
+    </AppProvider>
   </React.StrictMode>
 );

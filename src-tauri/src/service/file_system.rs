@@ -1,168 +1,219 @@
 use directories::BaseDirs;
 use log::{error, info};
-use serde::Serialize;
-use std::fs;
+use std::fs::{self, File};
+use std::io::Write;
 use std::path::Path;
 
 use crate::{
-    common::response::ResponseComand,
-    service::utils::{format_name_project, sanitize_filename},
+    common::response::ApiResponse,
+    common::utils::{format_name_project, sanitize_filename},
+    service::models::file_system::{DirectoryEntry, DirectoryListing},
 };
 
-#[derive(Serialize)]
-pub struct FileInfo {
-    name: String,
-    is_dir: bool,
-    path: String,
-}
-#[derive(Serialize, Clone, Default)]
-pub struct DirectoryEntry {
-    path: String,
-    name: String,
-    is_directory: bool,
-}
-#[derive(Serialize, Clone)]
-pub struct DirectoryListing {
-    path: String,
-    entries: Vec<DirectoryEntry>,
-}
-
-#[tauri::command]
-pub fn list_directory(path: &str) -> ResponseComand {
+/// Lista el contenido de un directorio específico dentro de "Repositories" en Downloads.
+///
+/// # Argumentos
+/// * `path` - Ruta relativa o nombre del directorio a listar dentro de Repositories.
+///
+/// # Retorno
+/// Un `ApiResponse` con el estado de la operación y un `DirectoryListing` en `data` si es exitoso.
+///
+/// # Errores
+/// - Fallo al obtener los directorios base del sistema.
+/// - Error al leer el directorio especificado.
+/// - Problemas con entradas individuales en el directorio.
+pub fn list_directory(path: &str) -> ApiResponse {
     info!("Listing directory: {}", path);
-    let mut response = ResponseComand::new();
-    let mut entries = Vec::new();
-    let path = Path::new(path);
-    // if !path.exists() || !path.is_dir() {
-    //     return Err("El directorio especificado no existe o no es un directorio.".to_string());
-    // }
 
+    // Obtener directorios base
     let base_dirs = match BaseDirs::new() {
         Some(dirs) => dirs,
         None => {
-            response.message = "Could not get base directories".to_string();
-            response.error = true;
-            return response;
+            error!("No se pudo obtener los directorios base");
+            return ApiResponse::new_error(
+                "Could not get base directories".to_string(),
+                vec![],
+            );
         }
     };
 
-    // Crear el path completo para "Repositories" dentro de la carpeta de descargas
-    let repo_path = base_dirs
-        .home_dir()
-        .join("Downloads")
-        .join("Repositories")
-        .join(path);
+    // Usar download_dir como respaldo si está disponible, de lo contrario home_dir
+    let downloads_path = dirs::download_dir().unwrap_or_else(|| base_dirs.home_dir().join("Downloads"));
+    let repo_path = downloads_path.join("Repositories").join(path);
     info!("Obteniendo contenido del directorio: {:?}", repo_path);
 
-    // Lee el contenido del directorio
-    match fs::read_dir(repo_path) {
+    let path = Path::new(&repo_path);
+
+    // Validar que la ruta sea un directorio
+    if !path.exists() {
+        error!("El directorio no existe: {}", repo_path.display());
+        return ApiResponse::new_error(
+            format!("El directorio no existe: {}", repo_path.display()),
+            vec![],
+        );
+    }
+    if !path.is_dir() {
+        error!("La ruta no es un directorio: {}", repo_path.display());
+        return ApiResponse::new_error(
+            format!("La ruta no es un directorio: {}", repo_path.display()),
+            vec![],
+        );
+    }
+
+    // Leer el contenido del directorio
+    let mut entries = Vec::new();
+    match fs::read_dir(path) {
         Ok(dir_entries) => {
             for entry in dir_entries {
                 match entry {
                     Ok(entry) => {
-                        let file_type = entry.file_type().unwrap();
+                        let file_type = match entry.file_type() {
+                            Ok(ft) => ft,
+                            Err(e) => {
+                                error!("Error al obtener el tipo de archivo: {}", e);
+                                continue; // Saltar esta entrada y continuar
+                            }
+                        };
                         let entry_path = entry.path();
                         entries.push(DirectoryEntry {
-                            path: entry_path.to_string_lossy().into_owned().to_string(),
+                            path: entry_path.to_string_lossy().into_owned(),
                             name: entry_path
                                 .file_name()
-                                .unwrap()
-                                .to_string_lossy()
-                                .into_owned()
-                                .to_string(),
+                                .map(|n| n.to_string_lossy().into_owned())
+                                .unwrap_or_default(),
                             is_directory: file_type.is_dir(),
                         });
                     }
                     Err(e) => {
-                        println!("Error al leer la entrada: {}", e);
-                        response.error = true;
-                        response.message = e.to_string();
+                        error!("Error al leer la entrada: {}", e);
+                        continue; // Continuar con la siguiente entrada en caso de error
                     }
                 }
             }
         }
         Err(e) => {
-            println!("Error al leer el directorio: {}", e);
-            response.message = e.to_string();
-            response.error = true;
-
-            return response;
+            error!("Error al leer el directorio: {}", e);
+            return ApiResponse::new_error(
+                format!("Error al leer el directorio: {}", e),
+                vec![],
+            );
         }
     }
-    response.success = true;
-    response.data = serde_json::to_value(DirectoryListing {
-        path: path.to_str().unwrap_or("").to_string(),
-        entries,
-    })
-    .unwrap();
-    response
-}
-//#[tauri::command]
 
-pub fn create_directory(path: &str) -> ResponseComand {
-    let mut response = ResponseComand::new();
+    ApiResponse::new_success(
+        serde_json::to_value(DirectoryListing {
+            path: repo_path.to_string_lossy().into_owned(),
+            entries,
+        }).unwrap_or(serde_json::Value::Null),
+        "Directorio listado con éxito".to_string(),
+    )
+}
+
+/// Crea un directorio dentro de "Repositories" en Downloads basado en un nombre formateado.
+///
+/// # Argumentos
+/// * `path` - Nombre o ruta base para formatear y usar como nombre del directorio.
+///
+/// # Retorno
+/// Un `ApiResponse` con el estado de la operación y la ruta creada en `data` si es exitoso.
+///
+/// # Errores
+/// - Fallo al obtener los directorios base del sistema.
+/// - Error al formatear o sanitizar el nombre.
+/// - Directorio ya existente.
+/// - Error al crear el directorio.
+pub fn create_directory(path: &str) -> ApiResponse {
     info!("Creando carpeta para: {}", path);
 
-    //Se formatea el nombre del proyecto
-    let mut name_formated = format_name_project(path);
-    info!("Nombre formateado: {:?}", name_formated);
-    if name_formated.is_err() {
-        let error_message = name_formated.err().unwrap();
-        error!("Error al crear el directorio: {}", error_message);
-        response.message = error_message;
-        return response;
-    }
-    //Validar solo para windows
-    if cfg!(target_os = "windows") {
-        name_formated = sanitize_filename(name_formated.unwrap().as_str());
-        if name_formated.is_err() {
-            let error_message = name_formated.err().unwrap();
-            error!("Error al crear el directorio: {}", error_message);
-            response.message = error_message;
-            return response;
-        }
-    }
-    let name_formated = sanitize_filename(name_formated.unwrap().as_str());
-    if name_formated.is_err() {
-        let error_message = name_formated.err().unwrap();
-        error!("Error al crear el directorio: {}", error_message);
-        response.message = error_message;
-        return response;
-    }
-
-    //
-    info!("Creando directorio: {:?}", name_formated);
-    let base_dirs = match BaseDirs::new() {
-        Some(dirs) => dirs,
-        None => {
-            response.message = "Could not get base directories".to_string();
-            response.error = true;
-            return response;
+    // Formatear el nombre del proyecto
+    let name_formated = match format_name_project(path) {
+        Ok(name) => name,
+        Err(e) => {
+            error!("Error al formatear nombre: {}", e);
+            return ApiResponse::new_error(
+                format!("Error al formatear nombre: {}", e),
+                vec![],
+            );
         }
     };
 
-    // Se crea el path completo para "Repositories" dentro de la carpeta de descargas
-    let repo_path = base_dirs
-        .home_dir()
-        .join("Downloads")
-        .join("Repositories")
-        .join(&name_formated.unwrap());
+    // Sanitizar el nombre del directorio
+    let sanitized_name = match sanitize_filename(name_formated.as_str()) {
+        Ok(name) => name,
+        Err(e) => {
+            error!("Error al sanitizar nombre: {}", e);
+            return ApiResponse::new_error(
+                format!("Error al sanitizar nombre: {}", e),
+                vec![],
+            );
+        }
+    };
 
-    //Se verifica si el directorio ya existe
+    info!("Creando directorio: {:?}", sanitized_name);
+
+    // Obtener directorios base
+    let base_dirs = match BaseDirs::new() {
+        Some(dirs) => dirs,
+        None => {
+            error!("No se pudo obtener los directorios base");
+            return ApiResponse::new_error(
+                "Could not get base directories".to_string(),
+                vec![],
+            );
+        }
+    };
+
+    // Usar download_dir como respaldo si está disponible
+    let downloads_path = dirs::download_dir().unwrap_or_else(|| base_dirs.home_dir().join("Downloads"));
+    let repo_path = downloads_path.join("Repositories").join(&sanitized_name);
     let path = Path::new(&repo_path);
+
+    // Verificar si el directorio existe
     if path.exists() {
-        response.message = "El directorio especificado ya existe.".to_string();
-        return response;
+        info!("Directorio ya existe: {}", path.display());
+        return ApiResponse::new_error(
+            "Ya existe un directorio creado para el proyecto.".to_string(),
+            vec![],
+        );
     }
-    //Se crea el directorio
+
+    // Crear el directorio
     info!("Creando directorio: {}", path.display());
     if let Err(e) = fs::create_dir(path) {
         error!("Error al crear el directorio: {}", e);
-        response.message = e.to_string();
-        return response;
+        return ApiResponse::new_error(
+            format!("Error al crear el directorio: {}", e),
+            vec![],
+        );
     }
 
-    response.success = true;
-    response.message = "Directorio creado con éxito.".to_string();
-    response
+    ApiResponse::new_success(
+        serde_json::json!(path.display().to_string()),
+        "Directorio para el proyecto creado con éxito.".to_string(),
+    )
+}
+
+
+pub fn write_file(path: &str, content: &str) -> ApiResponse {
+    info!("Escribiendo archivo: {}", path);
+    let mut file = match File::create(path) {
+        Ok(file) => file,
+        Err(e) => {
+            error!("Error al abrir archivo para escritura: {}", e);
+            return ApiResponse::new_error(
+                "Error al abrir archivo para escritura".to_string(),
+                vec![e.to_string()],
+            );
+        }
+    };
+
+    if let Err(e) = file.write_all(content.as_bytes()) {
+        error!("Error al escribir archivo: {}", e);
+        return ApiResponse::new_error(
+            "Error al escribir archivo".to_string(),
+            vec![e.to_string()],
+        );
+    }
+
+    ApiResponse::new_success(serde_json::json!(content), "Operación completada exitosamente".to_string())
 }

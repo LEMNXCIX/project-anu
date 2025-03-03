@@ -3,8 +3,19 @@ import MainPage from "./pages/Main";
 import { config } from "@/config/enviromentConfig";
 import { ThemeProvider } from "@/components/theme-provider";
 import Page from "./pages/page";
+import { Toaster } from "./components/ui/toaster";
+import { useAppContex } from "./hooks/use_app";
+import { useEffect } from "react";
+import { useApp } from "./context/app_contex";
+import { FolderSelectPage } from "./pages/initial_page";
 
 function App() {
+  const { state, dispatch } = useApp();
+  const { userConfig } = useAppContex();
+  useEffect(() => {
+    userConfig();
+  }, []);
+
   // Deshabilitar esto cuando se produzca el build
   if (config.ENVIROMENT != "DEV") {
     document.addEventListener(
@@ -24,11 +35,18 @@ function App() {
 
   return (
     <ThemeProvider defaultTheme="system" storageKey="vite-ui-theme">
-      <Page>
-        <Routes>
-          <Route path="/" element={<MainPage />} />
-        </Routes>
-      </Page>
+      {
+      !state.config_user.ruta_base ? (
+       <FolderSelectPage />
+      ) : (
+        <Page>
+          <Routes>
+            <Route path="/" element={<MainPage />} />
+          </Routes>
+        </Page>
+      )}
+
+      <Toaster />
     </ThemeProvider>
   );
 }
