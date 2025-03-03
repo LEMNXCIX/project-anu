@@ -26,16 +26,6 @@ export default function MainPage() {
   return (
     <>
       <div className="w-2/3 justify-center mx-auto">
-        <h1 className="mt-4 font-bold text-4xl p-14 text-center">
-          <Button
-            variant="ghost"
-            size="icon"
-            className="text-4xl m-2"
-          >
-            𒀭
-          </Button>
-          Project ANU
-        </h1>
         <CreateNewProyect />
         <h1 className="mt-1 font-bold text-3xl p-10 text-center">Proyectos</h1>
         <div className="gap-2 grid grid-cols-2 sm:grid-cols-1 mb-48">
@@ -52,7 +42,7 @@ export default function MainPage() {
                 disabled={!item.is_directory}
                 asChild={true}
               >
-                <AccordionTrigger>
+                <AccordionTrigger showArrow={false}>
                   {(item.is_directory ? "📁" : "📝") + " " + item.name}
                 </AccordionTrigger>
               </AccordionItem>

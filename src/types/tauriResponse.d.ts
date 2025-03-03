@@ -8,7 +8,7 @@ export type TauriResponse<T> = {
 export type DefaultResult<T> = {
     result: T;
 }
-export function createTauriResponse(): TauriResponse {
+export function createTauriResponse<T>(): TauriResponse {
     return {
         success: false,
         error: false,
