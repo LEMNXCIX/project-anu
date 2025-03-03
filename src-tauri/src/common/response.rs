@@ -58,6 +58,16 @@ impl ApiResponse {
         }
     }
 
+    pub fn new_warning(message: String, details: Vec<String>) -> Self {
+        ApiResponse {
+            success: false,
+            error: false,
+            data: Value::Null,
+            message,
+            error_details: details,
+        }
+    }
+
     /// Agrega un detalle de error a la lista existente, solo si la respuesta indica error.
     pub fn add_error_detail(&mut self, detail: String) {
         if self.error {

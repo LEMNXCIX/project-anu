@@ -39,17 +39,24 @@ export default function CreateNewProyect() {
       );
 
       //Se actualiza la lista de directorios
-      listDirectory();
-
+      if (response.success) {
+        listDirectory();
+      }
     } catch (error) {
       response.error = false;
       response.message = error;
     }
-    toast({
-      title: response.success && !response.error ? "Éxito" : "Alerta",
-      variant: response.error ? "destructive" : response.success ? "success" : "warning",
-      description: response.message,
-    });
+    if (!response.success) {
+      toast({
+        title: response.success && !response.error ? "Éxito" : "Alerta",
+        variant: response.error
+          ? "destructive"
+          : response.success
+          ? "success"
+          : "warning",
+        description: response.message,
+      });
+    }
   };
   const getNewName = async () => {
     let response: TauriResponse<DefaultResult<string>>;
@@ -58,11 +65,11 @@ export default function CreateNewProyect() {
       const formData = new FormData(form);
       const name = formData.get("projectName") as string;
 
-      response = await tauriService.exec_tauri_command(
+      response = (await tauriService.exec_tauri_command(
         "format_name_project_command",
-        { name: name}
-      ) as TauriResponse<DefaultResult<string>>;
-        console.log(response);
+        { name: name }
+      )) as TauriResponse<DefaultResult<string>>;
+      console.log(response);
       if (response.success) {
         navigator.clipboard.writeText(response.data.result);
         response.message = "Se copio el nombre formateado al portapales";
@@ -73,16 +80,17 @@ export default function CreateNewProyect() {
     }
     toast({
       title: response.success && !response.error ? "Éxito" : "Alerta",
-      variant: response.error ? "destructive" : response.success ? "success" : "warning",
+      variant: response.error
+        ? "destructive"
+        : response.success
+        ? "success"
+        : "warning",
       description: response.message,
     });
   };
   return (
     <>
-      <form
-        className="flex flex-row items-center p-10"
-        onSubmit={onSubmit}
-      >
+      <form className="flex flex-row items-center p-10" onSubmit={onSubmit}>
         <Input
           name="projectName"
           placeholder="Nombre del proyecto en Gitlab"

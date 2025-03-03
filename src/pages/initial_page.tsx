@@ -1,16 +1,35 @@
 // pages/FolderSelectPage.js
 import { Button } from "@/components/ui/button";
-import { Label } from "@radix-ui/react-label"; // Corregimos la importación
+import { Label } from "@radix-ui/react-label";
 import React, { useState } from "react";
-import { open } from "@tauri-apps/plugin-dialog"; // Importamos la función open
+import { open } from "@tauri-apps/plugin-dialog";
 import { tauriService } from "@/services/tauriService";
-import { data } from "react-router-dom";
 import { toast } from "@/hooks/use-toast";
-// Para invocar comandos de Rust si es necesario
+import * as path from "@tauri-apps/api/path"; // Importamos la API de path
 
 export function FolderSelectPage() {
-  // Renombré a FolderSelectPage para que coincida con el comentario
   const [folderPath, setFolderPath] = useState("");
+
+  // Función para validar si la ruta está dentro del directorio de descargas
+  const isWithinDownloads = async (selectedPath) => {
+    try {
+      // Obtenemos la ruta del directorio de Descargas
+      const downloadsPath = await path.downloadDir();
+      // Normalizamos las rutas para comparación
+      const normalizedDownloads = downloadsPath
+        .replace(/\\+/g, "/")
+        .toLowerCase();
+      const normalizedSelected = selectedPath
+        .replace(/\\+/g, "/")
+        .toLowerCase();
+
+      // Verificamos si la ruta seleccionada está dentro de Descargas
+      return normalizedSelected.startsWith(normalizedDownloads);
+    } catch (error) {
+      console.error("Error al validar la ruta:", error);
+      return false;
+    }
+  };
 
   // Función para abrir el diálogo de selección de carpeta
   const handleFolderSelect = async () => {
@@ -18,44 +37,58 @@ export function FolderSelectPage() {
       const selected = await open({
         directory: true,
         multiple: false,
-        title: "Selecciona un directorio para tus proyectos",
+        title: "Selecciona un directorio dentro de Descargas",
       });
 
       if (selected) {
-        setFolderPath(selected);
-        let ruta = { ruta_base: selected };
-        const res = await tauriService.exec_tauri_command(
-          "save_config_command",
-          { data: ruta }
-        );
-        //recargar la pagina
-        if (res.success) {
-          window.location.reload();
+        // Validamos si la carpeta está dentro de Descargas
+        const isValid = await isWithinDownloads(selected);
+
+        if (isValid) {
+          setFolderPath(selected);
+          let ruta = { ruta_base: selected };
+          const res = await tauriService.exec_tauri_command(
+            "save_config_command",
+            { data: ruta }
+          );
+
+          if (res.success) {
+            window.location.reload();
+          } else {
+            toast({
+              title: "Error",
+              variant: "destructive",
+              description: res.message,
+            });
+          }
         } else {
           toast({
-            title: "Error",
+            title: "Ruta inválida",
             variant: "destructive",
-            description: res.message,
+            description:
+              "Por favor, selecciona una carpeta dentro del directorio de Descargas.",
           });
         }
       }
     } catch (error) {
       console.error("Error al seleccionar carpeta:", error);
+      toast({
+        title: "Error",
+        variant: "destructive",
+        description: "Ocurrió un error al seleccionar la carpeta.",
+      });
     }
   };
 
   return (
     <div className="flex flex-col items-center justify-center min-h-screen">
       <h1 className="mt-4 font-bold text-4xl p-14 text-center">
-        <Button variant="ghost" size="icon" className="text-4xl m-2">
-          𒀭
-        </Button>
-        Project ANU
+        𒀭 Project ANU
       </h1>
-      <h1 className="text-2xl font-bold mb-4 p-5">Empecemos</h1>
+      <h1 className="text-2xl font-bold mb-4 p-5">Empecemos seleccionado un directorio para tus proyectos</h1>
       <div className="grid w-full max-w-sm items-center gap-1.5">
         <Label htmlFor="folder-select">
-          Directorio raiz para tus proyectos
+            <span className="text-lg">Directorio:</span>
         </Label>
         <div className="flex gap-2">
           <input
@@ -66,7 +99,7 @@ export function FolderSelectPage() {
             placeholder="No se ha seleccionado ninguna carpeta"
             className="flex-1 p-2 border rounded"
           />
-          <Button onClick={handleFolderSelect}>Seleccionar Carpeta</Button>
+          <Button className="flex-1 p-2 border rounded h-auto" onClick={handleFolderSelect}>Seleccionar</Button>
         </div>
       </div>
       {folderPath && (

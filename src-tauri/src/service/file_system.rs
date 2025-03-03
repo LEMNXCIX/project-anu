@@ -4,6 +4,7 @@ use std::fs::{self, File};
 use std::io::Write;
 use std::path::Path;
 
+use crate::service::config_user::get_item;
 use crate::{
     common::response::ApiResponse,
     common::utils::{format_name_project, sanitize_filename},
@@ -23,39 +24,22 @@ use crate::{
 /// - Error al leer el directorio especificado.
 /// - Problemas con entradas individuales en el directorio.
 pub fn list_directory(path: &str) -> ApiResponse {
-    info!("Listing directory: {}", path);
+    info!("Listing directory: {}", path);  
 
-    // Obtener directorios base
-    let base_dirs = match BaseDirs::new() {
-        Some(dirs) => dirs,
-        None => {
-            error!("No se pudo obtener los directorios base");
-            return ApiResponse::new_error(
-                "Could not get base directories".to_string(),
-                vec![],
-            );
-        }
-    };
-
-    // Usar download_dir como respaldo si está disponible, de lo contrario home_dir
-    let downloads_path = dirs::download_dir().unwrap_or_else(|| base_dirs.home_dir().join("Downloads"));
-    let repo_path = downloads_path.join("Repositories").join(path);
-    info!("Obteniendo contenido del directorio: {:?}", repo_path);
-
-    let path = Path::new(&repo_path);
-
+    let path = Path::new(&path);
+    info!("Obteniendo contenido del directorio: {:?}", path);
     // Validar que la ruta sea un directorio
     if !path.exists() {
-        error!("El directorio no existe: {}", repo_path.display());
+        error!("El directorio no existe: {}", path.display());
         return ApiResponse::new_error(
-            format!("El directorio no existe: {}", repo_path.display()),
+            format!("El directorio no existe: {}", path.display()),
             vec![],
         );
     }
     if !path.is_dir() {
-        error!("La ruta no es un directorio: {}", repo_path.display());
+        error!("La ruta no es un directorio: {}", path.display());
         return ApiResponse::new_error(
-            format!("La ruta no es un directorio: {}", repo_path.display()),
+            format!("La ruta no es un directorio: {}", path.display()),
             vec![],
         );
     }
@@ -102,7 +86,7 @@ pub fn list_directory(path: &str) -> ApiResponse {
 
     ApiResponse::new_success(
         serde_json::to_value(DirectoryListing {
-            path: repo_path.to_string_lossy().into_owned(),
+            path: path.to_string_lossy().into_owned(),
             entries,
         }).unwrap_or(serde_json::Value::Null),
         "Directorio listado con éxito".to_string(),
@@ -152,26 +136,20 @@ pub fn create_directory(path: &str) -> ApiResponse {
     info!("Creando directorio: {:?}", sanitized_name);
 
     // Obtener directorios base
-    let base_dirs = match BaseDirs::new() {
-        Some(dirs) => dirs,
-        None => {
-            error!("No se pudo obtener los directorios base");
-            return ApiResponse::new_error(
-                "Could not get base directories".to_string(),
-                vec![],
-            );
-        }
-    };
+    let config_file_ruta = get_item("ruta_base".to_string());
+    let ruta_base = config_file_ruta.get_data().as_str().unwrap().to_string();
+    // para windows la la barra es invertida
+    let mut ruta_proyecto = ruta_base + "/" + &sanitized_name;
+    if cfg!(windows) {
+         ruta_proyecto = ruta_proyecto.replace("/", "\\");
+    }
 
-    // Usar download_dir como respaldo si está disponible
-    let downloads_path = dirs::download_dir().unwrap_or_else(|| base_dirs.home_dir().join("Downloads"));
-    let repo_path = downloads_path.join("Repositories").join(&sanitized_name);
-    let path = Path::new(&repo_path);
+    let path = Path::new(&ruta_proyecto);
 
     // Verificar si el directorio existe
     if path.exists() {
         info!("Directorio ya existe: {}", path.display());
-        return ApiResponse::new_error(
+        return ApiResponse::new_warning(
             "Ya existe un directorio creado para el proyecto.".to_string(),
             vec![],
         );
@@ -216,4 +194,26 @@ pub fn write_file(path: &str, content: &str) -> ApiResponse {
     }
 
     ApiResponse::new_success(serde_json::json!(content), "Operación completada exitosamente".to_string())
+}
+
+pub fn list_directory_by_proyect_name(project_name: &str) -> ApiResponse {
+    info!("Listando directorios del proyecto {}", project_name);
+    let config_file_ruta = get_item("ruta_base".to_string());
+    let ruta_base = config_file_ruta.get_data().as_str().unwrap().to_string();
+    let ruta_proyecto = ruta_base+ "/" + project_name;
+
+    let path = Path::new(&ruta_proyecto);
+
+    if!path.is_dir()
+    {
+        return ApiResponse::new_error(
+            "El directorio no existe".to_string(),
+            vec![],
+        );
+    }
+
+    // Verificar si el directorio existe
+    let encontrados = list_directory(path.to_str().unwrap());
+
+    return encontrados;
 }
