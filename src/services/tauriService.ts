@@ -24,6 +24,7 @@ export const tauriService = {
 
       // Invocar el comando Tauri
       const response = await invoke<T>(command, args);
+      console.log(response)
 
       // Tauri devuelve objetos serializados directamente, así que asumimos que es un TauriResponse
       if (response && typeof response === "object") {

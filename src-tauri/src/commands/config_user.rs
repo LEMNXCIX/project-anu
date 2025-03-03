@@ -4,22 +4,11 @@ use serde_json::Value;
 use tauri::command;
 
 #[command]
-pub fn save_config_command(data: Value) -> Result<ApiResponse, String> {
-    log::info!("Data received: {:?}", data);
-    let response = create_json(data);
-    if response.is_success() {
-        Ok(response)
-    } else {
-        Err(response.get_message().to_string())
-    }
+pub fn save_config_command(data: Value) -> ApiResponse {
+    return create_json(data);
 }
 
 #[command]
-pub fn load_config_command() -> Result<ApiResponse, String> {
-    let response = load_data();
-    if response.is_success() {
-        Ok(response)
-    } else {
-        Err(response.get_message().to_string())
-    }
+pub fn load_config_command() -> ApiResponse {
+    return load_data();
 }

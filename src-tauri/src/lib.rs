@@ -19,6 +19,7 @@ pub fn run() -> Result<(), Box<dyn std::error::Error>> {
             commands::config_user::save_config_command,
             commands::file_system::create_directory_command,
             commands::file_system::list_directory_command,
+            commands::file_system::list_directory_by_proyect_name_command,
             commands::utils::format_name_project_command,
             commands::update::check_updates_comand,
             commands::update::apply_update_comand,

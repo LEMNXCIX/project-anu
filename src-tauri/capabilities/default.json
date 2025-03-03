@@ -2,19 +2,25 @@
   "$schema": "../gen/schemas/desktop-schema.json",
   "identifier": "default",
   "description": "Capability for the main window",
-  "windows": [
-    "main"
-  ],
+  "windows": ["main"],
   "permissions": [
     "core:default",
     "opener:default",
     "fs:default",
     "fs:allow-read-dir",
+    "fs:allow-write-file",
+    "fs:allow-create",
     {
       "identifier": "fs:scope",
       "allow": [
         {
-          "path": "$DOWNLOAD/*"
+          "path": "$HOME/**"
+        },
+        {
+          "path": "$DOCUMENTS/**"
+        },
+        {
+          "path": "$DOWNLOADS/**"
         }
       ]
     },
