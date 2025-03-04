@@ -1,0 +1,20 @@
+version: '3.8'
+
+services:
+  tauri-app:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: tauri_app
+    volumes:
+      - ${USERPROFILE}/Downloads:/downloads
+    ports:
+      - "1420:1420"  # Puerto de Vite
+      - "1421:1421"  # Puerto de HMR
+    environment:
+      - TAURI_PLATFORM=linux
+      - DOWNLOADS_DIR=/downloads
+      #- TAURI_DEV_HOST=0.0.0.0  # Permite que Vite sea accesible desde el host
+      - DISPLAY=host.docker.internal:0
+    tty: true
+    stdin_open: true
