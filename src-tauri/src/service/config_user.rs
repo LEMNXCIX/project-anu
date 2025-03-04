@@ -1,10 +1,57 @@
+use crate::common::response::ApiResponse;
+use log::error;
+use serde_json::{from_str, to_string_pretty, Value};
 use std::fs::{self, File};
 use std::io::{Read, Write};
 use std::path::PathBuf;
-use serde_json::{Value, from_str, to_string_pretty};
-use log::error;
-use crate::common::response::ApiResponse;
 
+pub trait ConfigProvider {
+    fn get_item(&self, key: String) -> ApiResponse;
+}
+
+pub struct RealConfigProvider;
+
+impl ConfigProvider for RealConfigProvider {
+    /// Obtiene un item específico del archivo JSON.
+    ///
+    /// # Argumentos
+    /// * `key` - Clave del item a obtener.
+    ///
+    /// # Retorno
+    /// Retorna una `ApiResponse` con el valor solicitado o un error.
+    ///
+    /// # Errores
+    /// Falla si el archivo no existe, no se puede leer o la clave no existe.
+    fn get_item(&self, key: String) -> ApiResponse {
+        let path = get_json_path();
+        if !path.exists() {
+            return ApiResponse::new_error("Archivo no encontrado".to_string(), vec![]);
+        }
+
+        match read_json_file(&path) {
+            Ok(json) => {
+                if let Value::Object(map) = json {
+                    match map.get(&key) {
+                        Some(value) => {
+                            ApiResponse::new_success(value.clone(), "Item encontrado".to_string())
+                        }
+                        None => ApiResponse::new_error("Clave no encontrada".to_string(), vec![]),
+                    }
+                } else {
+                    ApiResponse::new_error("El JSON raíz debe ser un objeto".to_string(), vec![])
+                }
+            }
+            Err(response) => response,
+        }
+    }
+}
+
+// Variable global para el proveedor (usada en tests)
+pub static mut CONFIG_PROVIDER: Option<&dyn ConfigProvider> = None;
+
+pub fn get_item(key: String) -> ApiResponse {
+    unsafe { CONFIG_PROVIDER.unwrap_or(&RealConfigProvider).get_item(key) }
+}
 /// Obtiene la ruta del archivo JSON en el directorio de datos de la aplicación.
 ///
 /// # Retorno
@@ -96,10 +143,7 @@ pub fn add_item(key: String, value: Value) -> ApiResponse {
         map.insert(key, value);
         write_json_file(&path, &json)
     } else {
-        ApiResponse::new_error(
-            "El JSON raíz debe ser un objeto".to_string(),
-            vec![],
-        )
+        ApiResponse::new_error("El JSON raíz debe ser un objeto".to_string(), vec![])
     }
 }
 
@@ -128,10 +172,7 @@ pub fn remove_item(key: String) -> ApiResponse {
         map.remove(&key);
         write_json_file(&path, &json)
     } else {
-        ApiResponse::new_error(
-            "El JSON raíz debe ser un objeto".to_string(),
-            vec![],
-        )
+        ApiResponse::new_error("El JSON raíz debe ser un objeto".to_string(), vec![])
     }
 }
 
@@ -150,46 +191,9 @@ pub fn load_data() -> ApiResponse {
         return ApiResponse::new_error("Archivo no encontrado".to_string(), vec![]);
     }
 
-    read_json_file(&path).map(|data| {
-        ApiResponse::new_success(data, "Datos cargados exitosamente".to_string())
-    }).unwrap_or_else(|response| response)
-}
-
-/// Obtiene un item específico del archivo JSON.
-///
-/// # Argumentos
-/// * `key` - Clave del item a obtener.
-///
-/// # Retorno
-/// Retorna una `ApiResponse` con el valor solicitado o un error.
-///
-/// # Errores
-/// Falla si el archivo no existe, no se puede leer o la clave no existe.
-pub fn get_item(key: String) -> ApiResponse {
-    let path = get_json_path();
-    if !path.exists() {
-        return ApiResponse::new_error("Archivo no encontrado".to_string(), vec![]);
-    }
-
-    match read_json_file(&path) {
-        Ok(json) => {
-            if let Value::Object(map) = json {
-                match map.get(&key) {
-                    Some(value) => ApiResponse::new_success(
-                        value.clone(),
-                        "Item encontrado".to_string(),
-                    ),
-                    None => ApiResponse::new_error("Clave no encontrada".to_string(), vec![]),
-                }
-            } else {
-                ApiResponse::new_error(
-                    "El JSON raíz debe ser un objeto".to_string(),
-                    vec![],
-                )
-            }
-        }
-        Err(response) => response,
-    }
+    read_json_file(&path)
+        .map(|data| ApiResponse::new_success(data, "Datos cargados exitosamente".to_string()))
+        .unwrap_or_else(|response| response)
 }
 
 /// Lee el contenido del archivo JSON y lo deserializa.
@@ -256,5 +260,8 @@ fn write_json_file(path: &PathBuf, json: &Value) -> ApiResponse {
         );
     }
 
-    ApiResponse::new_success(json.clone(), "Operación completada exitosamente".to_string())
+    ApiResponse::new_success(
+        json.clone(),
+        "Operación completada exitosamente".to_string(),
+    )
 }

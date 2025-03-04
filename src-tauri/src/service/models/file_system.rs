@@ -1,5 +1,5 @@
 // src/service/models/file_system.rs
-use serde::Serialize;
+use serde::{Deserialize, Serialize};
 
 #[derive(Serialize)]
 pub struct FileInfo {
@@ -8,14 +8,14 @@ pub struct FileInfo {
     pub path: String,
 }
 
-#[derive(Serialize, Clone, Default)]
+#[derive(Serialize,Deserialize, Clone, Default)]
 pub struct DirectoryEntry {
     pub path: String,
     pub name: String,
     pub is_directory: bool,
 }
 
-#[derive(Serialize, Clone)]
+#[derive(Serialize, Deserialize, Clone)]
 pub struct DirectoryListing {
     pub path: String,
     pub entries: Vec<DirectoryEntry>,

@@ -31,3 +31,18 @@ pub fn sanitize_filename(s: &str) -> Result<String, String> {
         Ok(sanitized)
     }
 }
+use tauri::{AppHandle, Result as TauriResult};
+use tauri_plugin_updater::Updater;
+
+pub trait UpdateHandler {
+    fn updater(&self) -> TauriResult<Updater>;
+    fn restart(&self);
+}
+
+impl UpdateHandler for AppHandle {
+    fn updater(&self) -> TauriResult<Updater> {
+        self.updater()
+    }
+
+    fn restart(&self) {}
+}

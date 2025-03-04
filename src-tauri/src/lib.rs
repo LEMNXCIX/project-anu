@@ -2,6 +2,7 @@ mod commands;
 mod common;
 mod service;
 mod logging;
+mod tests;
 
 use logging::initialize_logger;
 
