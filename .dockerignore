@@ -1,0 +1,37 @@
+# Ignorar archivos de control de versiones
+.git
+.gitignore
+
+# Ignorar dependencias instaladas localmente
+node_modules
+
+# Ignorar archivos de compilación y artefactos de Tauri
+dist
+target
+target
+target/*
+target/**
+src-tauri/target
+src-tauri/target/*
+*.log
+
+# Ignorar archivos de configuración local o sensibles
+.env
+*.env.*
+*.key
+*.pem
+
+# Ignorar carpetas de desarrollo o temporales
+.vscode
+.idea
+*.swp
+*.swo
+
+# Ignorar archivos de sistema
+.DS_Store
+Thumbs.db
+
+# Ignorar directorios de descarga si no deseas incluirlos en el contexto
+# (aunque en tu caso lo montas como volumen, así que no es estrictamente necesario ignorarlo aquí)
+Downloads
+downloads
