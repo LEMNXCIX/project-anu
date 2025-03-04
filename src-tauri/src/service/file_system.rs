@@ -141,7 +141,7 @@ pub fn create_directory(path: &str) -> ApiResponse {
     // para windows la la barra es invertida
     let mut ruta_proyecto = ruta_base + "/" + &sanitized_name;
     if cfg!(windows) {
-         ruta_proyecto = ruta_proyecto.replace("/", "\\");
+        ruta_proyecto = ruta_proyecto.replace("/", "\\");
     }
 
     let path = Path::new(&ruta_proyecto);
@@ -151,7 +151,7 @@ pub fn create_directory(path: &str) -> ApiResponse {
         info!("Directorio ya existe: {}", path.display());
         return ApiResponse::new_warning(
             "Ya existe un directorio creado para el proyecto.".to_string(),
-            vec![],
+            vec![format!("Directorio ya existe en: {}", path.display())],
         );
     }
 
@@ -208,7 +208,7 @@ pub fn list_directory_by_proyect_name(project_name: &str) -> ApiResponse {
     {
         return ApiResponse::new_error(
             "El directorio no existe".to_string(),
-            vec![],
+            vec![format!("El directorio no existe: {}", path.display())],
         );
     }
 
