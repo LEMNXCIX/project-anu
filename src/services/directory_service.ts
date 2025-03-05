@@ -1,6 +1,6 @@
-import { DirEntry, ListDirectory } from "@/types/directory.d";
-import { TauriResponse } from "@/types/tauriResponse";
-import { tauriService } from "@/services/tauriService";
+import { DirEntry, ListDirectory } from "@/types/directory_types";
+import { TauriResponse } from "@/types/tauri_response_types.d";
+import { tauriService } from "@/services/tauri_service";
 
 export const DirectoryService = {
   async createDirectory(name: string): Promise<any> {},
@@ -15,7 +15,6 @@ export const DirectoryService = {
       }) as TauriResponse<ListDirectory>;
 
       if (response.error) {
-        console.error(response.message);
         return [];
       }
       return response.data.entries;

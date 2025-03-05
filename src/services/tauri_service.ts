@@ -1,6 +1,6 @@
 import { invoke } from "@tauri-apps/api/core";
-import { createTauriResponse, TauriResponse } from "../types/tauriResponse.d";
-import utilsService from "@/services/UtilsService";
+import { createTauriResponse, TauriResponse } from "@/types/tauri_response_types.d";
+import utilsService from "@/services/utils_service";
 
 /**
  * Servicio para ejecutar comandos Tauri y manejar las respuestas.
@@ -20,11 +20,8 @@ export const tauriService = {
     let tauriResponse = createTauriResponse<T>();
 
     try {
-      console.log(`Ejecutando comando: ${command}`, args);
-
       // Invocar el comando Tauri
       const response = await invoke<T>(command, args);
-      console.log(response)
 
       // Tauri devuelve objetos serializados directamente, así que asumimos que es un TauriResponse
       if (response && typeof response === "object") {

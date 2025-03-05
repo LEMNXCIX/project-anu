@@ -1,13 +1,14 @@
 import { Route, Routes } from "react-router-dom";
-import MainPage from "./pages/Main";
+import MainPage from "./pages/main_page";
 import { config } from "@/config/enviromentConfig";
 import { ThemeProvider } from "@/components/theme-provider";
-import Page from "./pages/page";
+import Page from "./pages/sidebar_page";
 import { Toaster } from "./components/ui/toaster";
 import { useAppContex } from "./hooks/use_app";
 import { useEffect } from "react";
 import { useApp } from "./context/app_contex";
 import { FolderSelectPage } from "./pages/initial_page";
+import DetailsProjects from "./pages/details_projects_page";
 
 function App() {
   const { state, dispatch } = useApp();
@@ -42,6 +43,7 @@ function App() {
         <Page>
           <Routes>
             <Route path="/" element={<MainPage />} />
+            <Route path="/details-projects/:id" element={<DetailsProjects/>} />
           </Routes>
         </Page>
       )}

@@ -1,5 +1,5 @@
 import React, { createContext, useReducer, useContext, ReactNode, Dispatch } from "react";
-import { AppState } from "@/types/app";
+import { AppState } from "@/types/app_types";
 
 type Action = { type: "SET_ITEMS"; payload: AppState };
 

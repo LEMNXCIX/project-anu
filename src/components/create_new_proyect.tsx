@@ -4,13 +4,13 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { FolderPlusIcon, WandSparklesIcon } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
-import { tauriService } from "@/services/tauriService";
+import { tauriService } from "@/services/tauri_service";
 import {
   DefaultResult,
   TauriResponse,
   createTauriResponse,
-} from "@/types/tauriResponse.d";
-import { useListDirectory } from "@/hooks/useDirectory";
+} from "@/types/tauri_response_types.d";
+import { useListDirectory } from "@/hooks/use_directory";
 
 export default function CreateNewProyect() {
   type submitState = TauriResponse<any> & {
@@ -64,12 +64,15 @@ export default function CreateNewProyect() {
       const form = document.querySelector("form");
       const formData = new FormData(form);
       const name = formData.get("projectName") as string;
-
+      if(name === "")
+      {
+        return
+      }
       response = (await tauriService.exec_tauri_command(
         "format_name_project_command",
         { name: name }
       )) as TauriResponse<DefaultResult<string>>;
-      console.log(response);
+
       if (response.success) {
         navigator.clipboard.writeText(response.data.result);
         response.message = "Se copio el nombre formateado al portapales";
@@ -78,6 +81,7 @@ export default function CreateNewProyect() {
       response.error = true;
       response.message = "Error al formatear el nombre del proyecto: " + error;
     }
+
     toast({
       title: response.success && !response.error ? "Éxito" : "Alerta",
       variant: response.error

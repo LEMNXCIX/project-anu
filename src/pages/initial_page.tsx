@@ -3,7 +3,7 @@ import { Button } from "@/components/ui/button";
 import { Label } from "@radix-ui/react-label";
 import React, { useState } from "react";
 import { open } from "@tauri-apps/plugin-dialog";
-import { tauriService } from "@/services/tauriService";
+import { tauriService } from "@/services/tauri_service";
 import { toast } from "@/hooks/use-toast";
 import * as path from "@tauri-apps/api/path"; // Importamos la API de path
 
@@ -71,7 +71,6 @@ export function FolderSelectPage() {
         }
       }
     } catch (error) {
-      console.error("Error al seleccionar carpeta:", error);
       toast({
         title: "Error",
         variant: "destructive",

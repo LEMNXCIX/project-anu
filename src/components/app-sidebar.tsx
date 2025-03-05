@@ -28,7 +28,8 @@ import {
 import { Switch } from "@/components/ui/switch";
 import { Button } from "./ui/button";
 import { useTheme } from "./theme-provider";
-
+import { useNavigate } from "react-router-dom";
+import { useListDirectory } from "@/hooks/use_directory";
 // This is sample data
 const data = {
   user: {
@@ -50,12 +51,19 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
   // Note: I'm using state to show active item.
   // IRL you should use the url/router.
   const [activeItem, setActiveItem] = React.useState(data.navMain[0]);
+  const { setCurrentDirectory } = useListDirectory();
   const { setOpen } = useSidebar();
   const { setTheme, theme } = useTheme();
+  const navigate = useNavigate();
+
   const toggleTheme = () => {
     setTheme(theme === "dark" ? "light" : "dark");
   };
 
+  const goHomePage = () => {
+    setCurrentDirectory()
+    navigate("/");
+  };
   return (
     <Sidebar
       collapsible="icon"
@@ -80,6 +88,7 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
                       size="icon"
                       className="text-2xl m-2"
                       onDoubleClick={toggleTheme}
+                      onClick={goHomePage}
                     >
                       𒀭
                     </Button>
