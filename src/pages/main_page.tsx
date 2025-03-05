@@ -4,25 +4,30 @@ import {
   AccordionContent,
   AccordionItem,
   AccordionTrigger,
-} from "../components/ui/accordion";
+} from "@/components/ui/accordion";
 
-import CreateNewProyect from "../components/createNewProyect";
-import { useDirectory } from "../context/directoryContex";
-import { useListDirectory } from "../hooks/useDirectory";
-import { checkForAppUpdates } from "../services/updateService";
-import { useTheme } from "../components/theme-provider";
-import { Button } from "../components/ui/button";
+import CreateNewProyect from "@/components/create_new_proyect";
+import { useDirectory } from "@/context/directory_contex";
+import { useListDirectory } from "@/hooks/use_directory";
+import { checkForAppUpdates } from "@/services/update_service";
+import { useTheme } from "@/components/theme-provider";
+import { Button } from "@/components/ui/button";
+import { useNavigate } from "react-router-dom";
 
 export default function MainPage() {
   const { state, dispatch } = useDirectory();
-  const { listDirectory } = useListDirectory();
+  const { listDirectory, setCurrentDirectory } = useListDirectory();
   const { setTheme, theme } = useTheme();
+  const navigate = useNavigate();
+
   const toggleTheme = () => {
     setTheme(theme === "dark" ? "light" : "dark");
   };
+
   useEffect(() => {
     listDirectory();
   }, []);
+
   return (
     <>
       <div className="w-2/3 justify-center mx-auto">
@@ -42,9 +47,17 @@ export default function MainPage() {
                 disabled={!item.is_directory}
                 asChild={true}
               >
-                <AccordionTrigger showArrow={false}>
+                <div>
+                  <AccordionTrigger
+                    showArrow={false}
+                    onClick={() => {
+                      setCurrentDirectory(item);
+                      navigate("/details-projects/"+item.name);
+                    }}
+                  >
                   {(item.is_directory ? "📁" : "📝") + " " + item.name}
                 </AccordionTrigger>
+                </div>
               </AccordionItem>
             ))}
           </Accordion>

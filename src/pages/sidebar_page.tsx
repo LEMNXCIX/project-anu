@@ -1,4 +1,4 @@
-import { useLocation } from "react-router-dom";
+import { useLocation, useNavigate } from "react-router-dom";
 import { AppSidebar } from "@/components/app-sidebar";
 import {
   Breadcrumb,
@@ -13,11 +13,21 @@ import {
   SidebarProvider,
   SidebarTrigger,
 } from "@/components/ui/sidebar";
+import { useDirectory } from "@/context/directory_contex";
+import { useListDirectory } from "@/hooks/use_directory";
 
-export default function Page({ children }: { children: React.ReactNode }) {
+export default function Sidebar({ children }: { children: React.ReactNode }) {
+  const { setCurrentDirectory, setHistorialPath } = useListDirectory();
+  const navigate = useNavigate();
   const location = useLocation();
+  const { state: directoryState } = useDirectory();
   const isRootPath = location.pathname === "/"; // Más semántico y legible
+  const historialDirectorios = directoryState.historialPath;
 
+  const goHomePage = () => {
+    setCurrentDirectory();
+    navigate("/");
+  };
   return (
     <SidebarProvider
       style={
@@ -37,13 +47,16 @@ export default function Page({ children }: { children: React.ReactNode }) {
             {/* <SidebarTrigger className="-ml-1" /> */}
             <Breadcrumb>
               <BreadcrumbList>
-                <BreadcrumbItem className="hidden md:block">
-                  <BreadcrumbLink href="#">All Inboxes</BreadcrumbLink>
-                </BreadcrumbItem>
-                <BreadcrumbSeparator className="hidden md:block" />
-                <BreadcrumbItem>
-                  <BreadcrumbPage>Inbox</BreadcrumbPage>
-                </BreadcrumbItem>
+                {historialDirectorios.map((item, key) => (
+                  <>
+                    <BreadcrumbItem onClick={() => setHistorialPath(item)}>
+                      <BreadcrumbPage>{item.name}</BreadcrumbPage>
+                    </BreadcrumbItem>
+                    {key < historialDirectorios.length - 1 && (
+                      <BreadcrumbSeparator className="hidden md:block" />
+                    )}
+                  </>
+                ))}
               </BreadcrumbList>
             </Breadcrumb>
           </header>

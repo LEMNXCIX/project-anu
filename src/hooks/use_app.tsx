@@ -1,7 +1,7 @@
 import { useCallback, useEffect } from "react";
 import { useApp } from "@/context/app_contex";
-import { tauriService } from "@/services/tauriService";
-import { TauriResponse } from "@/types/tauriResponse";
+import { tauriService } from "@/services/tauri_service";
+import { TauriResponse } from "@/types/tauri_response_types.d";
 
 export const useAppContex = () => {
   const { dispatch } = useApp();

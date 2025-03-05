@@ -115,8 +115,8 @@ pub fn create_directory(path: &str) -> ApiResponse {
         Err(e) => {
             error!("Error al formatear nombre: {}", e);
             return ApiResponse::new_error(
-                format!("Error al formatear nombre: {}", e),
-                vec![],
+                e.clone(),
+                vec![format!("Error al formatear nombre: {}", e)],
             );
         }
     };
@@ -127,8 +127,8 @@ pub fn create_directory(path: &str) -> ApiResponse {
         Err(e) => {
             error!("Error al sanitizar nombre: {}", e);
             return ApiResponse::new_error(
-                format!("Error al sanitizar nombre: {}", e),
-                vec![],
+                e.clone(),
+                vec![format!("Error al sanitizar nombre: {}", e)],
             );
         }
     };
