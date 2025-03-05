@@ -7,7 +7,7 @@ import { Toaster } from "./components/ui/toaster";
 import { useAppContex } from "./hooks/use_app";
 import { useEffect } from "react";
 import { useApp } from "./context/app_contex";
-import { FolderSelectPage } from "./pages/initial_page";
+import { FolderSelectPage } from "./pages/initial_setup_page";
 import DetailsProjects from "./pages/details_projects_page";
 
 function App() {
@@ -37,7 +37,7 @@ function App() {
   return (
     <ThemeProvider defaultTheme="system" storageKey="vite-ui-theme">
       {
-      !state.config_user.ruta_base ? (
+      !state.config_user?.ruta_base ? (
        <FolderSelectPage />
       ) : (
         <Page>

@@ -19,7 +19,7 @@ const AppContex = createContext<{
 const appReducer = (state: AppState, action: Action): AppState => {
   switch (action.type) {
     case "SET_ITEMS":
-      return { ...state, config_user: action.payload, loaded: !action.payload.config_user};
+      return { ...state, config_user: action.payload, loaded: !action.payload?.config_user};
     default:
       return state;
   }
