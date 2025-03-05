@@ -11,7 +11,7 @@ import { useDirectory } from "@/context/directory_contex";
 import { useListDirectory } from "@/hooks/use_directory";
 import { checkForAppUpdates } from "@/services/update_service";
 import { useTheme } from "@/components/theme-provider";
-import { Button } from "@/components/ui/button";
+import { Button } from "../components/ui/button";
 import { useNavigate } from "react-router-dom";
 
 export default function DetailsProjects() {
