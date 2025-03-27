@@ -49,7 +49,7 @@ export default function Sidebar({ children }: { children: React.ReactNode }) {
               <BreadcrumbList>
                 {historialDirectorios.map((item, key) => (
                   <>
-                    <BreadcrumbItem onClick={() => setHistorialPath(item)}>
+                    <BreadcrumbItem key={key} onClick={() => setHistorialPath(item)}>
                       <BreadcrumbPage>{item.name}</BreadcrumbPage>
                     </BreadcrumbItem>
                     {key < historialDirectorios.length - 1 && (

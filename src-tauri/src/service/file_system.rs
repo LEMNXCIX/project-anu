@@ -1,4 +1,3 @@
-use directories::BaseDirs;
 use log::{error, info};
 use std::fs::{self, File};
 use std::io::Write;

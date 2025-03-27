@@ -1,7 +1,7 @@
 // src/api_response.rs
 
 use log::error;
-use serde::{de, Deserialize, Serialize};
+use serde::{Deserialize, Serialize};
 use serde_json::Value;
 
 /// Representa una respuesta genérica de la API para comandos Tauri.
