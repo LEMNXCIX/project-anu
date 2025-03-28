@@ -39,4 +39,5 @@ async-trait = "0.1"
 tauri-plugin-updater = "2"
 tauri-plugin-dialog = "2"
 
-
+diesel = { version = "2.2.0", features = ["sqlite", "returning_clauses_for_sqlite_3_35"] }
+libsqlite3-sys = { version = "0.30", features = ["bundled"] }
