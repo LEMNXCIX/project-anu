@@ -1,6 +1,6 @@
 import { Route, Routes } from "react-router-dom";
 import MainPage from "./pages/main_page";
-import { config } from "@/config/enviromentConfig";
+import { VITE_ENVIRONMENT } from "@/config/enviromentConfig";
 import { ThemeProvider } from "@/components/theme-provider";
 import Page from "./pages/sidebar_page";
 import { Toaster } from "./components/ui/toaster";
@@ -18,7 +18,7 @@ function App() {
   }, []);
 
   // Deshabilitar esto cuando se produzca el build
-  if (config.ENVIROMENT != "DEV") {
+  if (VITE_ENVIRONMENT != "DEV") {
     document.addEventListener(
       "contextmenu",
       function (event) {

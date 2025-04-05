@@ -16,7 +16,7 @@ import {
 import { useDirectory } from "@/context/directory_contex";
 import { useListDirectory } from "@/hooks/use_directory";
 import { useEffect, useState } from "react";
-import { config } from "@/config/enviromentConfig";
+import { VITE_ENVIRONMENT } from "@/config/enviromentConfig";
 import { Label } from "@/components/ui/label";
 
 export default function Sidebar({ children }: { children: React.ReactNode }) {
@@ -34,8 +34,8 @@ export default function Sidebar({ children }: { children: React.ReactNode }) {
   const [isVisible, setIsVisible] = useState(false);
 
   useEffect(() => {
-    setIsVisible(config.ENVIROMENT == "DEV"); // Show only if the environment is development
-  }, [config]);
+    setIsVisible(VITE_ENVIRONMENT == "DEV"); // Show only if the VITE_ENVIRONMENT is development
+  }, [VITE_ENVIRONMENT]);
 
   return (
     <div className="flex flex-col min-h-screen">
