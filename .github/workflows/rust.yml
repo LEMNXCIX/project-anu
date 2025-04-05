@@ -1,4 +1,4 @@
-name: Rust
+name: Rust CI
 
 on:
   push:
@@ -11,12 +11,12 @@ env:
 
 jobs:
   build:
-
     runs-on: ubuntu-latest
 
     steps:
-    - uses: actions/checkout@v4
-    - name: Navigate to project directory
-      run: cd src-tauri
-    - name: Run tests
+    - name: Checkout repository
+      uses: actions/checkout@v4
+      
+    - name: Run tests in src-tauri directory
+      working-directory: src-tauri
       run: cargo test --verbose
