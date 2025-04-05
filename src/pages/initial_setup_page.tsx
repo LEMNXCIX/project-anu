@@ -48,7 +48,8 @@ export function FolderSelectPage() {
         multiple: false,
         title: "Selecciona un directorio dentro de Descargas",
       });
-      if (selected && (await isWithinDownloads(selected))) {
+      //if (selected /*&& (await isWithinDownloads(selected))*/) {
+      if(selected) {
         setFormData((prev) => ({ ...prev, folderPath: selected }));
       } else {
         toast({
@@ -73,7 +74,9 @@ export function FolderSelectPage() {
         multiple: false,
         title: "Selecciona un archivo",
       });
-      if (selected && (await isWithinDownloads(selected))) {
+      
+      //if (selected /*&& (await isWithinDownloads(selected))*/) {
+      if(selected) {
         setFormData((prev) => {
           const newFiles = [...prev.files];
           newFiles[index].ruta = selected;

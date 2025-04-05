@@ -8,7 +8,7 @@ import {
   RefreshCcwIcon,
   SettingsIcon,
 } from "lucide-react";
-
+import { useEffect } from "react";
 import { NavUser } from "@/components/nav-user";
 import { Label } from "@/components/ui/label";
 import {
@@ -61,8 +61,10 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
   };
 
   const goHomePage = () => {
-    setCurrentDirectory()
-    navigate("/");
+    if (window.location.pathname !== "/") {
+      setCurrentDirectory();
+      navigate("/");
+    }
   };
   return (
     <Sidebar
