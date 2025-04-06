@@ -1,5 +1,5 @@
 use serde_json::json;
-use crate::common::response::ApiResponse;
+use crate::shared::response::ApiResponse;
 
 #[tokio::test] // Usamos tokio::test por consistencia con otros ejemplos, aunque aquí no es estrictamente necesario
 async fn test_new_default() {
