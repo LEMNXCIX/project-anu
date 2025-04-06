@@ -1,0 +1,1 @@
+pub mod diesel_template_repository;

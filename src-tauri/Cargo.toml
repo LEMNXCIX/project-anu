@@ -34,10 +34,11 @@ tempfile = "3.0"
 tokio = { version = "1.0", features = ["full"] }
 mockall = "0.13"
 async-trait = "0.1"
+chrono = "0.4.40"
 
 [target.'cfg(not(any(target_os = "android", target_os = "ios")))'.dependencies]
 tauri-plugin-updater = "2"
 tauri-plugin-dialog = "2"
 
-diesel = { version = "2.2.0", features = ["sqlite", "returning_clauses_for_sqlite_3_35"] }
+diesel = { version = "2.2.0", features = ["sqlite", "returning_clauses_for_sqlite_3_35", "chrono", "r2d2"] }
 libsqlite3-sys = { version = "0.30", features = ["bundled"] }

@@ -1,14 +1,14 @@
 use crate::{
-    common::response::ApiResponse,
-    service::{
+    shared::response::ApiResponse,
+    use_cases::{
         config_user::ConfigProvider,
         file_system::{create_directory, list_directory_by_proyect_name},
-        models::DirectoryListing,
     },
+    adapters::dto::DirectoryListing
 };
 // tests/file_system_tests.rs
 #[cfg(test)]
-use crate::service::config_user::get_item;
+use crate::use_cases::config_user::get_item;
 
 use mockall::mock;
 use std::{
@@ -32,7 +32,7 @@ impl ConfigProvider for MockConfigUserMock {
 #[test]
 fn test_create_directory_already_exists() {
     let tmp_dir = TempDir::new().unwrap();
-    let dir_path = tmp_dir.path().join("rutatestexists");
+    let dir_path = tmp_dir.path().join("ruta_testexists");
 
     // Crear el directorio antes de la prueba
     fs::create_dir(&dir_path).expect("No se pudo crear el directorio de prueba");
@@ -49,10 +49,10 @@ fn test_create_directory_already_exists() {
 
     let mock_static: &'static mut MockConfigUserMock = Box::leak(Box::new(mock));
     unsafe {
-        crate::service::config_user::CONFIG_PROVIDER = Some(mock_static);
+        crate::use_cases::config_user::CONFIG_PROVIDER = Some(mock_static);
     }
 
-    let result = create_directory("rutatestexists");
+    let result = create_directory("ruta_testexists");
     assert!(result.is_warning(), "Expected warning, got {:?}", result);
     assert_eq!(
         result.get_message(),
@@ -60,7 +60,7 @@ fn test_create_directory_already_exists() {
     );
 
     unsafe {
-        crate::service::config_user::CONFIG_PROVIDER = None;
+        crate::use_cases::config_user::CONFIG_PROVIDER = None;
     }
 }
 
@@ -79,7 +79,7 @@ fn test_create_directory_success() {
 
     let mock_static: &'static mut MockConfigUserMock = Box::leak(Box::new(mock));
     unsafe {
-        crate::service::config_user::CONFIG_PROVIDER = Some(mock_static);
+        crate::use_cases::config_user::CONFIG_PROVIDER = Some(mock_static);
     }
 
     let result = create_directory("test_create_directory_success");
@@ -89,7 +89,7 @@ fn test_create_directory_success() {
     assert!(Path::new(created_path).is_dir());
 
     unsafe {
-        crate::service::config_user::CONFIG_PROVIDER = None;
+        crate::use_cases::config_user::CONFIG_PROVIDER = None;
     }
 }
 #[test]
@@ -111,7 +111,7 @@ fn test_list_directory_by_project_name_success() {
 
     let mock_static: &'static mut MockConfigUserMock = Box::leak(Box::new(mock));
     unsafe {
-        crate::service::config_user::CONFIG_PROVIDER = Some(mock_static);
+        crate::use_cases::config_user::CONFIG_PROVIDER = Some(mock_static);
     }
 
     let result = list_directory_by_proyect_name(project_name);
@@ -122,6 +122,6 @@ fn test_list_directory_by_project_name_success() {
     assert_eq!(listing.entries[0].name, "file.txt");
 
     unsafe {
-        crate::service::config_user::CONFIG_PROVIDER = None;
+        crate::use_cases::config_user::CONFIG_PROVIDER = None;
     }
 }

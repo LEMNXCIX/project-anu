@@ -1,8 +1,8 @@
 // tests/file_system_tests.rs
-use crate::common::response::ApiResponse;
-use crate::service::config_user::{ConfigProvider, get_item};
-use crate::service::file_system::{create_directory, list_directory, list_directory_by_proyect_name, write_file};
-use crate::service::models::file_system::DirectoryListing;
+use crate::shared::response::ApiResponse;
+use crate::use_cases::config_user::{ConfigProvider, get_item};
+use crate::use_cases::file_system::{create_directory, list_directory, list_directory_by_proyect_name, write_file};
+use crate::adapters::dto::file_system_dto::DirectoryListing;
 use std::fs::{self, File};
 use std::io::Read;
 use mockall::mock;
@@ -26,11 +26,11 @@ macro_rules! with_mock {
     ($mock:expr, $body:expr) => {{
         let mock_static: &'static mut MockConfigUserMock = Box::leak(Box::new($mock));
         unsafe {
-            crate::service::config_user::CONFIG_PROVIDER = Some(mock_static);
+            crate::use_cases::config_user::CONFIG_PROVIDER = Some(mock_static);
         }
         let result = $body;
         unsafe {
-            crate::service::config_user::CONFIG_PROVIDER = None;
+            crate::use_cases::config_user::CONFIG_PROVIDER = None;
         }
         result
     }};
@@ -71,7 +71,7 @@ fn test_create_and_list_directory_integration() {
 
     with_mock!(mock, {
         // Crear un directorio
-        let response_create = create_directory("TestProject");
+        let response_create = create_directory("Test_Project");
         assert!(response_create.is_success(), "Expected success, got {:?}", response_create);
         let created_path: String = response_create.get_data().as_str().unwrap().to_string();
         assert!(std::path::Path::new(&created_path).exists());
@@ -105,11 +105,11 @@ fn test_list_directory_by_project_name_integration() {
 
     let mock_static: &'static mut MockConfigUserMock = Box::leak(Box::new(mock));
     unsafe {
-        crate::service::config_user::CONFIG_PROVIDER = Some(mock_static);
+        crate::use_cases::config_user::CONFIG_PROVIDER = Some(mock_static);
     }
 
     // Crear un directorio de proyecto y un archivo dentro
-    let project_name = "MyProjectByName";
+    let project_name = "My_ProjectByName";
     let response_create = create_directory(project_name);
     assert!(response_create.is_success(), "create_directory Expected success, got {:?}", response_create);
     let project_path: String = from_value(response_create.get_data().clone()).unwrap();
@@ -118,7 +118,7 @@ fn test_list_directory_by_project_name_integration() {
     File::create(&file_path).unwrap();
 
     unsafe {
-        crate::service::config_user::CONFIG_PROVIDER = Some(mock_static);
+        crate::use_cases::config_user::CONFIG_PROVIDER = Some(mock_static);
     }
 
     // Listar por nombre de proyecto
@@ -130,6 +130,6 @@ fn test_list_directory_by_project_name_integration() {
 
     // Limpiar el mock
     unsafe {
-        crate::service::config_user::CONFIG_PROVIDER = None;
+        crate::use_cases::config_user::CONFIG_PROVIDER = None;
     }
 }
