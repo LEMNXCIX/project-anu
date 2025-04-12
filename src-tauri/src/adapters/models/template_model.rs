@@ -4,6 +4,7 @@ pub struct TemplateModel {
     pub name: String,
     pub path: String,
     pub type_: String,
+    pub status: String,
     pub created_at: Option<chrono::NaiveDateTime>,
     pub modified_at: Option<chrono::NaiveDateTime>,
 }

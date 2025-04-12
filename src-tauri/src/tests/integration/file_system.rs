@@ -9,6 +9,10 @@ use mockall::mock;
 use tempfile::TempDir;
 use serde_json::from_value;
 
+
+const RUTA_BASE: &str = "ruta_base";
+const NAME_PROJECT: &str = "nombre_proyecto_default";
+
 mock! {
     pub ConfigUserMock {
         fn get_item(&self, key: String) -> ApiResponse;
@@ -63,7 +67,7 @@ fn test_create_and_list_directory_integration() {
     // Configurar el mock
     let mut mock = MockConfigUserMock::new();
     mock.expect_get_item()
-        .withf(|key: &String| key == "ruta_base")
+        .withf(|key: &String| key == RUTA_BASE)
         .returning({
             let base_path = base_path.clone();
             move |_: String| ApiResponse::new_success(serde_json::json!(base_path.clone()), "".to_string())
@@ -93,7 +97,7 @@ fn test_list_directory_by_project_name_integration() {
     // Configurar el mock para que get_item devuelva la ruta temporal
     let mut mock = MockConfigUserMock::new();
     mock.expect_get_item()
-        .withf(|key: &String| key == "ruta_base")
+        .withf(|key: &String| key == RUTA_BASE)
         .times(3) // Esperamos dos llamadas: una para create_directory y otra para list_directory_by_proyect_name
         .returning({
             let base_path = base_path.clone();

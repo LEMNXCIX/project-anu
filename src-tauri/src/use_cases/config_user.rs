@@ -1,3 +1,4 @@
+use crate::shared::cosnstants::APP_NAME;
 use crate::shared::response::ApiResponse;
 use log::error;
 use serde_json::{from_str, to_string_pretty, Value};
@@ -58,7 +59,7 @@ pub fn get_item(key: String) -> ApiResponse {
 /// Retorna una `PathBuf` apuntando al archivo `database.json` en el directorio de la app.
 fn get_json_path() -> PathBuf {
     let config_path = dirs::config_local_dir().unwrap();
-    return config_path.join("project-anu").join("config.json");
+    return config_path.join(APP_NAME).join("config.json");
 }
 
 /// Crea un archivo JSON inicial con los datos proporcionados.

@@ -14,12 +14,14 @@ use adapters::commands::{
     update_command::{apply_update_comand, check_updates_comand},
     utils_command::format_name_project_command,
 };
-use infrastructure::logging;
+use infrastructure::{logging, db::connections::sqlite};
 use logging::initialize_logger;
 
 pub fn run() -> Result<(), Box<dyn std::error::Error>> {
     // Inicializar el logger antes de cualquier otra cosa
     initialize_logger()?;
+    sqlite::sqlite_connection::Database::new();
+    
 
     tauri::Builder::default()
         .plugin(tauri_plugin_dialog::init())
