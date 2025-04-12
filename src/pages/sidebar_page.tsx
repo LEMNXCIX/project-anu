@@ -44,7 +44,7 @@ export default function Sidebar({ children }: { children: React.ReactNode }) {
         <AppSidebar />
         <div className="flex flex-1 flex-col">
           {isVisible && (
-            <Label className="sticky top-0 w-full text-center text-xs bg-sky-500 text-gray-950 font-bold z-50">
+            <Label className="sticky top-0 w-full text-center text-xs bg-orange-600 p-1 text-current font-bold z-50">
               Developer Mode 
             </Label>
           )}

@@ -7,6 +7,7 @@ pub struct TemplateDto {
     pub name: String,
     pub path: String,
     pub type_: String,
+    pub status: String,
     pub created_at: Option<String>,
     pub modified_at: Option<String>,
 }

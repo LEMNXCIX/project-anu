@@ -5,6 +5,8 @@ use simplelog::{
 };
 use std::fs::{self, File};
 
+use crate::shared::cosnstants::APP_NAME;
+
 pub fn initialize_logger() -> Result<(), std::io::Error> {
     // Obtener el directorio de configuración
     let config_dir = dirs::config_dir().ok_or_else(|| {
@@ -13,12 +15,12 @@ pub fn initialize_logger() -> Result<(), std::io::Error> {
             "No se pudo obtener el directorio de configuración",
         )
     })?;
-    let log_dir = config_dir.join("mi_app/logs");
+    let log_dir = config_dir.join(format!("{}/logs", APP_NAME));
     fs::create_dir_all(&log_dir)?;
 
     // Configurar el archivo de logs
-    let log_file = log_dir.join("app.log");
-    let log_file = File::create(&log_file)?;
+    let log_file_path = log_dir.join("rust_backend.log");
+    let log_file = File::create(&log_file_path)?;
 
     // Configurar el formato del logger
     let config = ConfigBuilder::new().build();
@@ -48,7 +50,7 @@ pub fn initialize_logger() -> Result<(), std::io::Error> {
 
     info!(
         "Logger configurado, escribiendo en: {:?}",
-        log_dir.join("app.log")
+        &log_file_path
     );
     Ok(())
 }

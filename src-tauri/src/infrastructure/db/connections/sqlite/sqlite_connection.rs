@@ -1,8 +1,10 @@
 use crate::infrastructure::db::connections::connection::ConnectionProvider;
-use diesel::connection::LoadConnection;
+use crate::infrastructure::db::diesel::diesel_migrations::run_migrations;
+use crate::shared::cosnstants::APP_NAME;
 use diesel::r2d2::{ConnectionManager, Pool, PooledConnection};
-use diesel::{Connection, SqliteConnection};
-use std::env;
+use diesel::SqliteConnection;
+use log::info;
+use std::{env, fs};
 
 pub struct Database {
     pool: Pool<ConnectionManager<SqliteConnection>>,
@@ -29,12 +31,61 @@ impl ConnectionProvider for Database {
 
 impl Database {
     pub fn new() -> Self {
-        let database_url = env::var("DATABASE_URL").expect("DATABASE_URL debe estar configurada");
-        let manager = ConnectionManager::<SqliteConnection>::new(&database_url);
+        dotenvy::dotenv().ok();
+        // Dentro de Database::new o donde corresponda
+        let config_path = dirs::config_local_dir()
+            .expect("No se pudo determinar el directorio de configuración local")
+            .join(APP_NAME);
+
+        // Lee el nombre del archivo de la base de datos desde DATABASE_URL
+        let data_base_name = env::var("DATABASE_URL").expect("DATABASE_URL debe estar configurada");
+
+        // Crea el directorio de configuración, NO el database_path
+        fs::create_dir_all(&config_path).expect("No se pudo crear el directorio de configuración");
+
+        // Construye la ruta completa al archivo de la base de datos
+        let database_path = config_path.join(&data_base_name);
+
+        // Log de la ruta del archivo
+        info!(
+            "Conectando a la base de datos en: {}",
+            database_path.to_string_lossy()
+        );
+
+        // Crea la URL para SQLite con la ruta absoluta
+        let database_url = format!(
+            "sqlite://{}",
+            database_path
+                .canonicalize()
+                .unwrap_or_else(|_| {
+                    // Si el archivo no existe, lo creamos vacío para que canonicalize funcione después
+                    fs::File::create(&database_path)
+                        .expect("No se pudo crear el archivo de la base de datos");
+                    database_path
+                        .canonicalize()
+                        .expect("No se pudo resolver la ruta de la base de datos")
+                })
+                .to_string_lossy()
+        );
+
+        info!("URL de conexión SQLite: {}", database_url);
+        info!("Conectando a la base de datos: {}", database_url);
+
+        let manager = ConnectionManager::<SqliteConnection>::new(
+            &database_path.to_string_lossy().to_string(),
+        );
         let pool = Pool::builder()
-            .max_size(10) // Número máximo de conexiones en el pool (ajustable)
+            .max_size(10)
             .build(manager)
             .expect("Error al crear el pool de conexiones");
+
+        // Ejecuta migraciones al iniciar
+        let mut conn = pool
+            .get()
+            .expect("No se pudo obtener conexión para migraciones");
+
+        run_migrations(&mut conn);
+
         Database {
             pool,
             active_connection: None,
