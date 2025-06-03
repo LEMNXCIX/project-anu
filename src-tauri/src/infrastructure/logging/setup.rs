@@ -5,7 +5,7 @@ use simplelog::{
 };
 use std::fs::{self, File};
 
-use crate::shared::cosnstants::APP_NAME;
+use crate::shared::constants::APP_NAME;
 
 pub fn initialize_logger() -> Result<(), std::io::Error> {
     // Obtener el directorio de configuración

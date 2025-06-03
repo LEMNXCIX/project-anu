@@ -1,6 +1,6 @@
 use crate::infrastructure::db::connections::connection::ConnectionProvider;
 use crate::infrastructure::db::diesel::diesel_migrations::run_migrations;
-use crate::shared::cosnstants::APP_NAME;
+use crate::shared::constants::APP_NAME;
 use diesel::r2d2::{ConnectionManager, Pool, PooledConnection};
 use diesel::SqliteConnection;
 use log::info;
