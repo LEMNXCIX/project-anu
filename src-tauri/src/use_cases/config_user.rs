@@ -1,4 +1,4 @@
-use crate::shared::cosnstants::APP_NAME;
+use crate::shared::constants::APP_NAME;
 use crate::shared::response::ApiResponse;
 use log::error;
 use serde_json::{from_str, to_string_pretty, Value};
