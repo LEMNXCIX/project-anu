@@ -16,7 +16,8 @@
       {
         "title": "Project ANU",
         "width": 850,
-        "height": 600
+        "height": 600,
+        "decorations": false
       }
     ],
     "security": {

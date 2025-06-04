@@ -29,28 +29,46 @@
     --chart-3: 197 37% 24%;
     --chart-4: 43 74% 66%;
     --chart-5: 27 87% 67%;
+    --sidebar-background: 0 0% 98%;
+    --sidebar-foreground: 240 5.3% 26.1%;
+    --sidebar-primary: 240 5.9% 10%;
+    --sidebar-primary-foreground: 0 0% 98%;
+    --sidebar-accent: 240 4.8% 95.9%;
+    --sidebar-accent-foreground: 240 5.9% 10%;
+    --sidebar-border: 220 13% 91%;
+    --sidebar-ring: 217.2 91.2% 59.8%;
   }
 
   .dark {
-    --background: 0 0% 0%; /* Negro puro */
-    --foreground: 0 0% 98%; /* Texto blanco para alto contraste */
-    --card: 0 0% 5%; /* Gris muy oscuro para tarjetas */
+    --background: 0 0% 0%;
+    /* Negro puro */
+    --foreground: 0 0% 98%;
+    /* Texto blanco para alto contraste */
+    --card: 0 0% 5%;
+    /* Gris muy oscuro para tarjetas */
     --card-foreground: 0 0% 98%;
     --popover: 0 0% 5%;
     --popover-foreground: 0 0% 98%;
-    --primary: 0 0% 98%; /* Texto blanco */
-    --primary-foreground: 0 0% 5%; /* Texto negro sobre fondo claro */
-    --secondary: 0 0% 7%; /* Gris oscuro para elementos secundarios */
+    --primary: 0 0% 98%;
+    /* Texto blanco */
+    --primary-foreground: 0 0% 5%;
+    /* Texto negro sobre fondo claro */
+    --secondary: 0 0% 7%;
+    /* Gris oscuro para elementos secundarios */
     --secondary-foreground: 0 0% 98%;
     --muted: 0 0% 7%;
-    --muted-foreground: 0 0% 70%; /* Texto más claro sobre fondo oscuro */
+    --muted-foreground: 0 0% 70%;
+    /* Texto más claro sobre fondo oscuro */
     --accent: 0 0% 7%;
     --accent-foreground: 0 0% 98%;
-    --destructive: 0 62.8% 30.6%; /* Mantener el rojo para elementos destructivos */
+    --destructive: 0 62.8% 30.6%;
+    /* Mantener el rojo para elementos destructivos */
     --destructive-foreground: 0 0% 98%;
-    --border: 0 0% 10%; /* Borde gris oscuro */
+    --border: 0 0% 10%;
+    /* Borde gris oscuro */
     --input: 0 0% 10%;
-    --ring: 0 0% 20%; /* Resaltado oscuro */
+    --ring: 0 0% 20%;
+    /* Resaltado oscuro */
 
     /* Mantener los mismos colores de gráficos, o ajustar según sea necesario */
     --chart-1: 220 70% 50%;
@@ -73,7 +91,47 @@
   * {
     @apply border-border;
   }
+
   body {
     @apply bg-background text-foreground;
   }
+}
+
+
+
+.titlebar-space {
+  flex-grow: 1;
+  cursor: default;
+  height: 90%;
+}
+
+.titlebar {  height: 36px;
+  user-select: none;
+  top: 0;
+  left: 0;
+  right: 0;
+  backdrop-filter: blur(10px);
+  background-color: rgba(255, 255, 255, 0.2);
+  /* Fondo semitransparente */
+
+}
+
+.titlebar-button {
+  display: inline-flex;
+  justify-content: center;
+  align-items: center;
+  width: 36px;
+  height: 36px;
+  user-select: none;
+  -webkit-user-select: none;
+  border-radius: 0;
+}
+
+#titlebar-close:hover {
+  background: red;
+}
+
+#contendedor{
+  overflow-y: auto;
+  height: 94dvh;
 }

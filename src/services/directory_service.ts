@@ -10,15 +10,17 @@ export const DirectoryService = {
       if (!name) {
         name = "";
       }
-      let response = await tauriService.exec_tauri_command("list_items_by_directory", {
-        name,
-      }) as TauriResponse<ListDirectory>;
+      let response = (await tauriService.exec_tauri_command(
+        "list_directory_command",
+        {
+          name,
+        }
+      )) as TauriResponse<ListDirectory>;
 
       if (response.error) {
         return [];
       }
       return response.data.entries;
-
     } catch (error) {
       console.error("Error al listar los items del directorio");
     }

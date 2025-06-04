@@ -6,6 +6,10 @@ const host = process.env.TAURI_DEV_HOST;
 
 // https://vitejs.dev/config/
 export default defineConfig(async () => ({
+  define: {
+    __WS_TOKEN__: JSON.stringify(process.env.VITE_WS_TOKEN),
+  },
+
   plugins: [react()],
 
   // Vite options tailored for Tauri development and only applied in `tauri dev` or `tauri build`

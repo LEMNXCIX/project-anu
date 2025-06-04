@@ -1,21 +1,16 @@
 import { useEffect } from "react";
 import {
   Accordion,
-  AccordionContent,
   AccordionItem,
   AccordionTrigger,
 } from "@/components/ui/accordion";
 
-import CreateNewProyect from "@/components/create_new_proyect";
 import { useDirectory } from "@/context/directory_contex";
 import { useListDirectory } from "@/hooks/use_directory";
-import { checkForAppUpdates } from "@/services/update_service";
-import { useTheme } from "@/components/theme-provider";
-import { Button } from "../components/ui/button";
 import { useNavigate } from "react-router-dom";
 
 export default function DetailsProjects() {
-  const { state, dispatch } = useDirectory();
+  const { state } = useDirectory();
   const { listDirectory, setCurrentDirectory } = useListDirectory();
   const navigate = useNavigate();
   useEffect(() => {
