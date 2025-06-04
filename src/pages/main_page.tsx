@@ -3,7 +3,7 @@ import CreateNewProyect from "@/components/create_new_proyect";
 import { useListDirectory } from "@/hooks/use_directory";
 import { useTheme } from "@/components/theme-provider";
 import { useNavigate } from "react-router-dom";
-import LastProjects from "@/components/list-last-proyects";
+import LastProjects from "@/components/list_last_proyects";
 import { useApp } from "@/context/app_contex";
 
 export default function MainPage() {
