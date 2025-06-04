@@ -3,8 +3,6 @@ import { check } from "@tauri-apps/plugin-updater";
 import { ask, message } from "@tauri-apps/plugin-dialog";
 import { invoke } from "@tauri-apps/api/core";
 
-
-
 export async function checkForAppUpdates(onUserClick: boolean) {
   try {
     console.log("Chequeando actualizaciones");
@@ -51,10 +49,13 @@ export async function checkForAppUpdates(onUserClick: boolean) {
     }
   } catch (error) {
     console.error("An error occurred while checking for updates:", error);
-    await message("An error occurred while checking for updates. Please try again later.", {
-      title: "Error",
-      kind: "error",
-      okLabel: "OK",
-    });
+    await message(
+      "An error occurred while checking for updates. Please try again later.",
+      {
+        title: "Error",
+        kind: "error",
+        okLabel: "OK",
+      }
+    );
   }
 }

@@ -11,7 +11,7 @@ type Action =
   | { type: "SET_ITEMS"; payload: DirEntry[] }
   | { type: "SET_INITIAL_STATE" }
   | { type: "SET_CURRENT_DIRECTORY"; payload: DirEntry }
-  | { type: "SET_HISTORIAL_PATH"; payload: DirEntry[]}
+  | { type: "SET_HISTORIAL_PATH"; payload: DirEntry[] }
   | { type: "ADD_HISTORIAL_PATH"; payload: DirEntry };
 
 const initialState: DirectoryState = {
@@ -44,7 +44,7 @@ const directoryReducer = (
     case "SET_CURRENT_DIRECTORY":
       return { ...state, currentDirectory: action.payload };
     case "SET_HISTORIAL_PATH":
-      return {...state, historialPath: action.payload}
+      return { ...state, historialPath: action.payload };
     case "ADD_HISTORIAL_PATH":
       let newHistorial = [...state.historialPath];
       if (action.payload) {

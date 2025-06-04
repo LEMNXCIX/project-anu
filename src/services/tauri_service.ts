@@ -1,5 +1,8 @@
 import { invoke } from "@tauri-apps/api/core";
-import { createTauriResponse, TauriResponse } from "@/types/tauri_response_types.d";
+import {
+  createTauriResponse,
+  TauriResponse,
+} from "@/types/tauri_response_types.d";
 import utilsService from "@/services/utils_service";
 
 /**
@@ -37,9 +40,14 @@ export const tauriService = {
 
       return tauriResponse;
     } catch (error: any) {
-      console.error(`El comando: ${command} no pudo ser ejecutado: ${error.message || error}`);
+      console.error(
+        `El comando: ${command} no pudo ser ejecutado: ${
+          error.message || error
+        }`
+      );
       tauriResponse.error = true;
-      tauriResponse.message = error.message || `Error al ejecutar el comando: ${command}`;
+      tauriResponse.message =
+        error.message || `Error al ejecutar el comando: ${command}`;
       tauriResponse.error_details = [error.message || error.toString()];
 
       return tauriResponse;

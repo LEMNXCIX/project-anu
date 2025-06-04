@@ -3,7 +3,6 @@ import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { FolderPlusIcon, WandSparklesIcon } from "lucide-react";
-import { useToast } from "@/hooks/use-toast";
 import { tauriService } from "@/services/tauri_service";
 import {
   DefaultResult,
@@ -11,12 +10,12 @@ import {
   createTauriResponse,
 } from "@/types/tauri_response_types.d";
 import { useListDirectory } from "@/hooks/use_directory";
-
+import { toast } from "sonner";
 export default function CreateNewProyect() {
   type submitState = TauriResponse<any> & {
     submitted: boolean;
   };
-  const { toast } = useToast();
+
   const tauriResponse = createTauriResponse();
   const defaultSubmitState: submitState = {
     ...tauriResponse,
@@ -47,15 +46,13 @@ export default function CreateNewProyect() {
       response.message = error;
     }
     if (!response.success) {
-      toast({
-        title: response.success && !response.error ? "Éxito" : "Alerta",
-        variant: response.error
-          ? "destructive"
-          : response.success
-          ? "success"
-          : "warning",
-        description: response.message,
-      });
+      if (response.success && !response.error) {
+        toast.success("Exito", { description: response.message });
+      } else if (!response.success && !response.error) {
+        toast.warning("Alerta", { description: response.message });
+      } else {
+        toast.error("Error", { description: response.message });
+      }
     }
   };
   const getNewName = async () => {
@@ -64,9 +61,8 @@ export default function CreateNewProyect() {
       const form = document.querySelector("form");
       const formData = new FormData(form);
       const name = formData.get("projectName") as string;
-      if(name === "")
-      {
-        return
+      if (name === "") {
+        return;
       }
       response = (await tauriService.exec_tauri_command(
         "format_name_project_command",
@@ -82,35 +78,29 @@ export default function CreateNewProyect() {
       response.message = "Error al formatear el nombre del proyecto: " + error;
     }
 
-    toast({
-      title: response.success && !response.error ? "Éxito" : "Alerta",
-      variant: response.error
-        ? "destructive"
-        : response.success
-        ? "success"
-        : "warning",
-      description: response.message,
-    });
+    if (response.success && !response.error) {
+      toast.success("Exito", { description: response.message });
+    } else if (!response.success && !response.error) {
+      toast.warning("Alerta", { description: response.message });
+    } else {
+      toast.error("Error", { description: response.message });
+    }
   };
   return (
     <>
-      <form className="flex flex-row items-center p-10" onSubmit={onSubmit}>
+      <h4 className=" font-semibold m-1">Crea un nuevo proyecto</h4>
+      <form className="flex flex-row items-center" onSubmit={onSubmit}>
         <Input
           name="projectName"
           placeholder="Nombre del proyecto en Gitlab"
-          className="m-2"
+          className="m-1"
         />
 
-        <Button type="submit" variant="ghost" size="default">
+        <Button type="submit" variant="ghost" size="icon">
           <FolderPlusIcon />
         </Button>
 
-        <Button
-          type="button"
-          variant="ghost"
-          size="default"
-          onClick={getNewName}
-        >
+        <Button type="button" variant="ghost" size="icon" onClick={getNewName}>
           <WandSparklesIcon />
         </Button>
       </form>

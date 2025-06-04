@@ -5,7 +5,7 @@ import { Input } from "@/components/ui/input";
 import React, { useState } from "react";
 import { open } from "@tauri-apps/plugin-dialog";
 import { tauriService } from "@/services/tauri_service";
-import { toast } from "@/hooks/use-toast";
+import { toast } from "sonner";
 import * as path from "@tauri-apps/api/path";
 import { ToggleGroup, ToggleGroupItem } from "@/components/ui/toggle-group";
 import { Separator } from "@/components/ui/separator";
@@ -49,21 +49,15 @@ export function FolderSelectPage() {
         title: "Selecciona un directorio dentro de Descargas",
       });
       //if (selected /*&& (await isWithinDownloads(selected))*/) {
-      if(selected) {
+      if (selected) {
         setFormData((prev) => ({ ...prev, folderPath: selected }));
       } else {
-        toast({
-          title: "Ruta inválida",
-          variant: "destructive",
+        toast.warning("Ruta inválida", {
           description: "Selecciona una carpeta dentro de Descargas.",
         });
       }
     } catch (error) {
-      toast({
-        title: "Error",
-        variant: "destructive",
-        description: "Error al seleccionar la carpeta.",
-      });
+      toast.error("Error", { description: "Error al seleccionar la carpeta." });
     }
   };
 
@@ -74,27 +68,21 @@ export function FolderSelectPage() {
         multiple: false,
         title: "Selecciona un archivo",
       });
-      
+
       //if (selected /*&& (await isWithinDownloads(selected))*/) {
-      if(selected) {
+      if (selected) {
         setFormData((prev) => {
           const newFiles = [...prev.files];
           newFiles[index].ruta = selected;
           return { ...prev, files: newFiles };
         });
       } else {
-        toast({
-          title: "Ruta inválida",
-          variant: "destructive",
-          description: "Selecciona un archivo dentro de Descargas.",
+        toast.warning("Ruta inválida", {
+          description: "Selecciona una archivo dentro de Descargas.",
         });
       }
     } catch (error) {
-      toast({
-        title: "Error",
-        variant: "destructive",
-        description: "Error al seleccionar el archivo.",
-      });
+      toast.error("Error", { description: "Error al seleccionar el archivo." });
     }
   };
 
@@ -109,20 +97,15 @@ export function FolderSelectPage() {
   const validateForm = () => {
     // Validar ruta base
     if (!formData.folderPath) {
-      toast({
-        title: "Campo requerido",
-        variant: "warning",
+      toast.warning("Campo requerido", {
         description: "Por favor, selecciona un directorio base.",
       });
-      return false;
     }
 
     // Validar que todas las rutas de archivos estén completas
     for (let i = 0; i < formData.files.length; i++) {
       if (!formData.files[i].ruta) {
-        toast({
-          title: "Campo requerido",
-          variant: "warning",
+        toast.warning("Campo requerido", {
           description: `Por favor, selecciona un archivo para el Archivo ${
             i + 1
           }.`,
@@ -133,19 +116,16 @@ export function FolderSelectPage() {
 
     // Validar nombre y apellido del usuario
     if (!formData.userName || !formData.userLastName) {
-      toast({
-        title: "Campo requerido",
-        variant: "destructive",
-        description: "Por favor, ingresa el nombre y apellido del usuario.",
+      toast.warning("Campo requerido", {
+        description: "or favor, ingresa el nombre y apellido del usuario.",
       });
+
       return false;
     }
 
     // Validar nombre y apellido del líder
     if (!formData.leaderName || !formData.leaderLastName) {
-      toast({
-        title: "Campo requerido",
-        variant: "destructive",
+      toast.warning("Campo requerido", {
         description:
           "Por favor, ingresa el nombre y apellido del líder de equipo.",
       });
@@ -183,16 +163,10 @@ export function FolderSelectPage() {
       if (res.success) {
         window.location.reload();
       } else {
-        toast({
-          title: "Error",
-          variant: "destructive",
-          description: res.message,
-        });
+        toast.warning("Campo requerido", { description: res.message });
       }
     } catch (error) {
-      toast({
-        title: "Error",
-        variant: "destructive",
+      toast.error("Campo requerido", {
         description: "Error al guardar la configuración.",
       });
     }

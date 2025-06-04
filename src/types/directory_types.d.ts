@@ -10,8 +10,7 @@ export interface ListDirectory {
 }
 
 export interface DirectoryState {
-    items: DirEntry[];
-    currentDirectory: DirEntry,
-    historialPath: DirEntry[]
-  }
-  
+  items: DirEntry[];
+  currentDirectory: DirEntry;
+  historialPath: DirEntry[];
+}

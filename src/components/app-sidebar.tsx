@@ -1,15 +1,5 @@
 import * as React from "react";
-import {
-  ArchiveX,
-  File,
-  Inbox,
-  Send,
-  Trash2,
-  RefreshCcwIcon,
-  SettingsIcon,
-} from "lucide-react";
-import { useEffect } from "react";
-import { NavUser } from "@/components/nav-user";
+import { RefreshCcwIcon, SettingsIcon } from "lucide-react";
 import { Label } from "@/components/ui/label";
 import {
   Sidebar,
@@ -22,7 +12,6 @@ import {
   SidebarMenu,
   SidebarMenuButton,
   SidebarMenuItem,
-  SidebarTrigger,
   useSidebar,
 } from "@/components/ui/sidebar";
 import { Switch } from "@/components/ui/switch";
@@ -72,9 +61,6 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
       className="overflow-hidden [&>[data-sidebar=sidebar]]:flex-row"
       {...props}
     >
-      {/* This is the first sidebar */}
-      {/* We disable collapsible and adjust width to icon. */}
-      {/* This will make the sidebar appear as icons. */}
       <Sidebar
         collapsible="none"
         className="!w-[calc(var(--sidebar-width-icon)_+_1px)] border-r"
