@@ -1,23 +1,9 @@
-import { useEffect } from "react";
 import CreateNewProyect from "@/components/create_new_proyect";
-import { useListDirectory } from "@/hooks/use_directory";
-import { useTheme } from "@/components/theme-provider";
-import { useNavigate } from "react-router-dom";
 import LastProjects from "@/components/list_last_proyects";
 import { useApp } from "@/context/app_contex";
 
 export default function MainPage() {
-  const { listDirectory, setCurrentDirectory } = useListDirectory();
-  const { setTheme, theme } = useTheme();
-  const navigate = useNavigate();
-
-  const toggleTheme = () => {
-    setTheme(theme === "dark" ? "light" : "dark");
-  };
   const { state } = useApp();
-  useEffect(() => {
-    listDirectory();
-  }, []);
 
   return (
     <>

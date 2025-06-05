@@ -17,7 +17,7 @@ import { useEffect, useState } from "react";
 import { VITE_ENVIRONMENT } from "@/config/enviroment_config";
 import { Label } from "@/components/ui/label";
 export default function Sidebar({ children }: { children: React.ReactNode }) {
-  const { setCurrentDirectory, setHistorialPath } = useListDirectory();
+  const { setHistorialPath } = useListDirectory();
   const navigate = useNavigate();
   const location = useLocation();
   const { state: directoryState } = useDirectory();
@@ -25,7 +25,6 @@ export default function Sidebar({ children }: { children: React.ReactNode }) {
   const historialDirectorios = directoryState.historialPath;
 
   const goHomePage = () => {
-    setCurrentDirectory();
     navigate("/");
   };
   const [isVisible, setIsVisible] = useState(false);

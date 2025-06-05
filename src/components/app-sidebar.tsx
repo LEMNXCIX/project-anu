@@ -40,7 +40,6 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
   // Note: I'm using state to show active item.
   // IRL you should use the url/router.
   const [activeItem, setActiveItem] = React.useState(data.navMain[0]);
-  const { setCurrentDirectory } = useListDirectory();
   const { setOpen } = useSidebar();
   const { setTheme, theme } = useTheme();
   const navigate = useNavigate();
@@ -51,7 +50,6 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
 
   const goHomePage = () => {
     if (window.location.pathname !== "/") {
-      setCurrentDirectory();
       navigate("/");
     }
   };

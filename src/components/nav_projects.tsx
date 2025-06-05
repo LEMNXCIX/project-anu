@@ -30,9 +30,8 @@ import { useListDirectory } from "@/hooks/use_directory";
 
 export function NavProjects({ favorites }: { favorites: DirEntry[] }) {
   const { isMobile } = useSidebar();
-  const { listDirectory, setCurrentDirectory } = useListDirectory();
+  const { setCurrentDirectory } = useListDirectory();
   const navigate = useNavigate();
-  console.log(favorites);
 
   return (
     <SidebarGroup className="group-data-[collapsible=icon]:hidden">

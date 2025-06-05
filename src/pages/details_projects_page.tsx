@@ -1,33 +1,48 @@
-import { useEffect } from "react";
 import {
   Accordion,
   AccordionItem,
   AccordionTrigger,
 } from "@/components/ui/accordion";
-
 import { useDirectory } from "@/context/directory_contex";
 import { useListDirectory } from "@/hooks/use_directory";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom"; // Añadimos useParams
+import MarkdownViewer from "@/components/md_editor";
+import { useState } from "react";
 
 export default function DetailsProjects() {
   const { state } = useDirectory();
-  const { listDirectory, setCurrentDirectory } = useListDirectory();
+  const { setCurrentDirectory } = useListDirectory();
   const navigate = useNavigate();
-  useEffect(() => {
-    listDirectory(state.currentDirectory.path);
-  }, []);
+  const { id } = useParams(); // Obtenemos el :id de la ruta
+  const [selectedFileContent, setSelectedFileContent] = useState<string | null>(null);
+
+  const handleDirectoryClick = (item) => {
+    if (item.is_directory) {
+      console.log("setCurrentDirectory llamado con:", item);
+      setCurrentDirectory(item);
+      // Solo navegamos si el :id actual no coincide con el nombre del directorio
+      if (id !== item.name) {
+        navigate("/details-projects/" + item.name);
+      }
+    } else {
+      const fileContent = `# Contenido de ${item.name}\nEste es un ejemplo de contenido del archivo.\n- Punto 1\n- Punto 2\n[Enlace de ejemplo](https://ejemplo.com)`;
+      setSelectedFileContent(fileContent);
+    }
+  };
+
   return (
     <>
-      <div className="w-2/3 justify-center mx-auto">
+      <div className="w-11/12 justify-center mx-auto">
         <h1 className="mt-1 font-bold text-3xl p-10 text-center">
           {state.currentDirectory.name}
         </h1>
-        <div className="gap-2 grid grid-cols-2 sm:grid-cols-1 mb-48">
+        <MarkdownViewer />
+        <div className="gap-2 grid grid-cols-1 sm:grid-cols-2 mb-10">
           <Accordion
             type="single"
             collapsible
             className="w-full"
-            orientation="vertical"
+            orientation="horizontal"
           >
             {state.items.map((item, index) => (
               <AccordionItem
@@ -38,10 +53,12 @@ export default function DetailsProjects() {
               >
                 <AccordionTrigger
                   showArrow={false}
-                  onClick={() => {
-                    setCurrentDirectory(item);
-                    navigate("/details-projects/" + item.name);
-                  }}
+                  onClick={() => handleDirectoryClick(item)}
+                  aria-label={
+                    item.is_directory
+                      ? `Abrir directorio ${item.name}`
+                      : `Ver contenido de archivo ${item.name}`
+                  }
                 >
                   {(item.is_directory ? "📁" : "📝") + " " + item.name}
                 </AccordionTrigger>
