@@ -24,6 +24,7 @@ export const useListDirectory = () => {
   );
 
   const setCurrentDirectory = (directory?: DirEntry) => {
+    console.log('setCurrenteDirectory')
     if (directory) {
       dispatch({ type: "SET_CURRENT_DIRECTORY", payload: directory });
       dispatch({ type: "ADD_HISTORIAL_PATH", payload: directory });

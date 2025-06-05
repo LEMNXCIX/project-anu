@@ -32,8 +32,8 @@ export default function DetailsProjects() {
 
   return (
     <>
-      <div className="w-11/12 justify-center mx-auto">
-        <h1 className="mt-1 font-bold text-3xl p-10 text-center">
+      <div className="w-11/12 justify-center mx-auto ">
+        <h1 className="mt-1 text-3xl p-10 text-center font-bold  text-accent-foreground/70">
           {state.currentDirectory.name}
         </h1>
         <MarkdownViewer />

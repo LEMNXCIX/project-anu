@@ -44,11 +44,18 @@ export function NavProjects({ favorites }: { favorites: DirEntry[] }) {
                 <a
                   title={item.name}
                   onClick={() => {
-                    setCurrentDirectory(item);
-                    navigate("/details-projects/" + item.name);
+                    const currentPath = window.location.pathname;
+                    const newPath = `/details-projects/${encodeURIComponent(
+                      item.name
+                    )}`;
+
+                    if (currentPath !== newPath) {
+                      setCurrentDirectory(item);
+                      navigate(newPath);
+                    }
                   }}
                 >
-                  <span> {item.is_directory ? <Folder /> : <File />}</span>
+                  <span>{item.is_directory ? <Folder /> : <File />}</span>
                   <span>{item.name}</span>
                 </a>
               </SidebarMenuButton>
@@ -89,7 +96,7 @@ export function NavProjects({ favorites }: { favorites: DirEntry[] }) {
         <SidebarMenuItem>
           <SidebarMenuButton className="text-sidebar-foreground/70">
             <MoreHorizontal />
-            <span>More</span>
+            <span>Mas</span>
           </SidebarMenuButton>
         </SidebarMenuItem>
       </SidebarMenu>
