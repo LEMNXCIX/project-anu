@@ -39,6 +39,7 @@ export default function CreateNewProyect() {
 
       //Se actualiza la lista de directorios
       if (response.success) {
+      
         listDirectory();
       }
     } catch (error) {

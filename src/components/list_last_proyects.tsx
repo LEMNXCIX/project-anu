@@ -1,4 +1,3 @@
-import { useEffect } from "react";
 import {
   Accordion,
   AccordionItem,
@@ -7,20 +6,13 @@ import {
 
 import { useDirectory } from "@/context/directory_contex";
 import { useListDirectory } from "@/hooks/use_directory";
-import { useTheme } from "@/components/theme-provider";
-import { Button } from "@/components/ui/button";
 import { useNavigate } from "react-router-dom";
 import { File, Folder } from "lucide-react";
 
 export default function LastProjects() {
-  const { state, dispatch } = useDirectory();
-  const { listDirectory, setCurrentDirectory } = useListDirectory();
-  const { setTheme, theme } = useTheme();
+  const { state } = useDirectory();
+  const { setCurrentDirectory } = useListDirectory();
   const navigate = useNavigate();
-
-  useEffect(() => {
-    listDirectory();
-  }, []);
 
   return (
     <>

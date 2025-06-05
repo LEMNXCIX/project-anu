@@ -10,6 +10,7 @@ export const DirectoryService = {
       if (!name) {
         name = "";
       }
+      console.log(name)
       let response = (await tauriService.exec_tauri_command(
         "list_directory_command",
         {

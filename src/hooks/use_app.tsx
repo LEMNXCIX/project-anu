@@ -4,7 +4,6 @@ import { tauriService } from "@/services/tauri_service";
 import { TauriResponse } from "@/types/tauri_response_types.d";
 import { getCurrentWindow } from "@tauri-apps/api/window";
 import { DirectoryService } from "@/services/directory_service";
-import { c } from "vite/dist/node/moduleRunnerTransport.d-CXw_Ws6P";
 
 export const useAppContex = () => {
   const { dispatch } = useApp();
@@ -15,6 +14,7 @@ export const useAppContex = () => {
     )) as TauriResponse<any>;
 
     let entries = res.data;
+    console.log('dsddsd')
     let proyects = await DirectoryService.listItemsByDirectory(
       entries.ruta_base
     );

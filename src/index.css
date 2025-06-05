@@ -97,23 +97,20 @@
   }
 }
 
-
-
 .titlebar-space {
   flex-grow: 1;
   cursor: default;
   height: 90%;
 }
 
-.titlebar {  height: 36px;
+.titlebar {
+  height: 36px;
   user-select: none;
   top: 0;
   left: 0;
   right: 0;
   backdrop-filter: blur(10px);
-  background-color: rgba(255, 255, 255, 0.2);
-  /* Fondo semitransparente */
-
+  background-color: hsl(var(--background) / 0.2);
 }
 
 .titlebar-button {
@@ -131,7 +128,7 @@
   background: red;
 }
 
-#contendedor{
+#contendedor {
   overflow-y: auto;
   height: 94dvh;
 }

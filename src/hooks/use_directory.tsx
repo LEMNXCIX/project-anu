@@ -11,6 +11,7 @@ export const useListDirectory = () => {
 
   const listDirectory = useCallback(
     async (path?: string) => {
+      console.log(path)
       const res = (await tauriService.exec_tauri_command(
         "list_directory_command",
         { name: path ? path : state.config_user.ruta_base }
