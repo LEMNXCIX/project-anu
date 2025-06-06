@@ -148,7 +148,7 @@ const MarkdownEditor = () => {
 
   return (
     <TooltipProvider>
-      <div className="rounded-lg shadow-sm p-4 bg-stone-900">
+      <div className="rounded-lg shadow-sm p-3">
         {/* Toolbar */}
         <div className="flex flex-wrap items-center gap-2 border-b pb-2 mb-4">
           {/* Bold */}
@@ -160,7 +160,7 @@ const MarkdownEditor = () => {
                 onClick={() => editor.chain().focus().toggleBold().run()}
                 aria-label="Toggle bold"
               >
-                <Bold className="h-4 w-4 text-secondary-foreground" />
+                <Bold className="h-4 w-4 " />
               </Button>
             </TooltipTrigger>
             <TooltipContent>Negrita</TooltipContent>
@@ -488,7 +488,7 @@ const MarkdownEditor = () => {
         {/* Editor Content */}
         <EditorContent
           editor={editor}
-          className="prose prose-invert max-w-none w-full focus:outline-none h-60 text-white" // Corregimos h=60 a h-60 y añadimos prose-invert para temas oscuros
+          className="prose prose-invert max-w-none w-full focus:outline-none h-min-60 text-white" // Corregimos h=60 a h-60 y añadimos prose-invert para temas oscuros
         />
         {/* Estilos personalizados para asegurar que los elementos se visualicen */}
       </div>
