@@ -50,7 +50,7 @@ export function NavProjects({ favorites }: { favorites: DirEntry[] }) {
                     )}`;
 
                     if (currentPath !== newPath) {
-                      setCurrentDirectory(item);
+                      setCurrentDirectory(item, false);
                       navigate(newPath);
                     }
                   }}
@@ -60,12 +60,14 @@ export function NavProjects({ favorites }: { favorites: DirEntry[] }) {
                 </a>
               </SidebarMenuButton>
               <DropdownMenu>
-                <DropdownMenuTrigger asChild>
-                  <SidebarMenuAction showOnHover>
-                    <MoreHorizontal />
-                    <span className="sr-only">Mas</span>
-                  </SidebarMenuAction>
-                </DropdownMenuTrigger>
+                {favorites.length > 5 && (
+                  <DropdownMenuTrigger asChild>
+                    <SidebarMenuAction showOnHover>
+                      <MoreHorizontal />
+                      <span className="sr-only">Mas</span>
+                    </SidebarMenuAction>
+                  </DropdownMenuTrigger>
+                )}
                 <DropdownMenuContent
                   className="w-56 rounded-lg"
                   side={isMobile ? "bottom" : "right"}
