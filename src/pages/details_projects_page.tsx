@@ -8,14 +8,26 @@ import { useListDirectory } from "@/hooks/use_directory";
 import { useNavigate, useParams } from "react-router-dom"; // Añadimos useParams
 import MarkdownViewer from "@/components/md_editor";
 import { useState } from "react";
+import {
+  Breadcrumb,
+  BreadcrumbItem,
+  BreadcrumbList,
+  BreadcrumbPage,
+  BreadcrumbSeparator,
+} from "@/components/ui/breadcrumb";
 
 export default function DetailsProjects() {
   const { state } = useDirectory();
-  const { setCurrentDirectory } = useListDirectory();
+  const { setCurrentDirectory, setHistorialPath, clearHistorialPath } =
+    useListDirectory();
   const navigate = useNavigate();
+  const { state: directoryState } = useDirectory();
   const { id } = useParams(); // Obtenemos el :id de la ruta
-  const [selectedFileContent, setSelectedFileContent] = useState<string | null>(null);
+  const [selectedFileContent, setSelectedFileContent] = useState<string | null>(
+    null
+  );
 
+  const historialDirectorios = directoryState.historialPath;
   const handleDirectoryClick = (item) => {
     if (item.is_directory) {
       console.log("setCurrentDirectory llamado con:", item);
@@ -32,6 +44,20 @@ export default function DetailsProjects() {
 
   return (
     <>
+      <Breadcrumb>
+        <BreadcrumbList>
+          {historialDirectorios.map((item, key) => (
+            <>
+              <BreadcrumbItem key={key} onClick={() => setHistorialPath(item)}>
+                <BreadcrumbPage>{item.name}</BreadcrumbPage>
+              </BreadcrumbItem>
+              {key < historialDirectorios.length - 1 && (
+                <BreadcrumbSeparator className="hidden md:block" />
+              )}
+            </>
+          ))}
+        </BreadcrumbList>
+      </Breadcrumb>
       <div className="w-11/12 justify-center mx-auto ">
         <h1 className="mt-1 text-3xl p-10 text-center font-bold  text-accent-foreground/70">
           {state.currentDirectory.name}

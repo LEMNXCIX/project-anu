@@ -67,7 +67,7 @@ const CodeBlockComponent = ({ node, updateAttributes }) => {
         <span className="text-sm font-mono">[Código] Ejemplo</span>
         <Button
           variant="ghost"
-          size="sm"
+          size="icon"
           onClick={copyToClipboard}
           aria-label="Copiar código"
           className="text-white hover:bg-gray-700"
@@ -131,7 +131,7 @@ const MarkdownEditor = () => {
     content: ` `,
     editorProps: {
       attributes: {
-        class: "p-4 focus:outline-none bg-stone-900 rounded-md text-white", // Añadimos text-white para mejor visibilidad
+        class: "pre p-4 focus:outline-none bg-stone-900 rounded-md text-white", // Añadimos text-white para mejor visibilidad
       },
     },
     onCreate({ editor }) {
@@ -150,13 +150,14 @@ const MarkdownEditor = () => {
     <TooltipProvider>
       <div className="rounded-lg shadow-sm p-3">
         {/* Toolbar */}
-        <div className="flex flex-wrap items-center gap-2 border-b pb-2 mb-4">
+        <div className="flex flex-wrap items-center gap-2 border-b pt-2 mb-4">
           {/* Bold */}
+
           <Tooltip>
             <TooltipTrigger asChild>
               <Button
                 variant={editor.isActive("bold") ? "secondary" : "ghost"}
-                size="sm"
+                size="icon"
                 onClick={() => editor.chain().focus().toggleBold().run()}
                 aria-label="Toggle bold"
               >
@@ -171,7 +172,7 @@ const MarkdownEditor = () => {
             <TooltipTrigger asChild>
               <Button
                 variant={editor.isActive("italic") ? "secondary" : "ghost"}
-                size="sm"
+                size="icon"
                 onClick={() => editor.chain().focus().toggleItalic().run()}
                 aria-label="Toggle italic"
               >
@@ -186,7 +187,7 @@ const MarkdownEditor = () => {
             <TooltipTrigger asChild>
               <Button
                 variant={editor.isActive("strike") ? "secondary" : "ghost"}
-                size="sm"
+                size="icon"
                 onClick={() => editor.chain().focus().toggleStrike().run()}
                 aria-label="Toggle strikethrough"
               >
@@ -207,7 +208,7 @@ const MarkdownEditor = () => {
                     ? "secondary"
                     : "ghost"
                 }
-                size="sm"
+                size="icon"
                 onClick={() =>
                   editor.chain().focus().toggleHeading({ level: 1 }).run()
                 }
@@ -227,7 +228,7 @@ const MarkdownEditor = () => {
                     ? "secondary"
                     : "ghost"
                 }
-                size="sm"
+                size="icon"
                 onClick={() =>
                   editor.chain().focus().toggleHeading({ level: 2 }).run()
                 }
@@ -247,7 +248,7 @@ const MarkdownEditor = () => {
                     ? "secondary"
                     : "ghost"
                 }
-                size="sm"
+                size="icon"
                 onClick={() =>
                   editor.chain().focus().toggleHeading({ level: 3 }).run()
                 }
@@ -266,7 +267,7 @@ const MarkdownEditor = () => {
             <TooltipTrigger asChild>
               <Button
                 variant={editor.isActive("bulletList") ? "secondary" : "ghost"}
-                size="sm"
+                size="icon"
                 onClick={() => editor.chain().focus().toggleBulletList().run()}
                 aria-label="Toggle bullet list"
               >
@@ -280,7 +281,7 @@ const MarkdownEditor = () => {
             <TooltipTrigger asChild>
               <Button
                 variant={editor.isActive("orderedList") ? "secondary" : "ghost"}
-                size="sm"
+                size="icon"
                 onClick={() => editor.chain().focus().toggleOrderedList().run()}
                 aria-label="Toggle ordered list"
               >
@@ -297,7 +298,7 @@ const MarkdownEditor = () => {
             <TooltipTrigger asChild>
               <Button
                 variant={editor.isActive("codeBlock") ? "secondary" : "ghost"}
-                size="sm"
+                size="icon"
                 onClick={() => editor.chain().focus().toggleCodeBlock().run()}
                 aria-label="Toggle code block"
               >
@@ -312,7 +313,7 @@ const MarkdownEditor = () => {
             <TooltipTrigger asChild>
               <Button
                 variant={editor.isActive("blockquote") ? "secondary" : "ghost"}
-                size="sm"
+                size="icon"
                 onClick={() => editor.chain().focus().toggleBlockquote().run()}
                 aria-label="Toggle blockquote"
               >
@@ -329,7 +330,7 @@ const MarkdownEditor = () => {
                 <DialogTrigger asChild>
                   <Button
                     variant={editor.isActive("link") ? "secondary" : "ghost"}
-                    size="sm"
+                    size="icon"
                     onClick={() => {
                       if (editor.isActive("link")) {
                         console.log("Eliminando enlace existente...");
@@ -458,7 +459,7 @@ const MarkdownEditor = () => {
             <TooltipTrigger asChild>
               <Button
                 variant="ghost"
-                size="sm"
+                size="icon"
                 onClick={() => editor.chain().focus().undo().run()}
                 disabled={!editor.can().undo()}
                 aria-label="Undo"
@@ -473,7 +474,7 @@ const MarkdownEditor = () => {
             <TooltipTrigger asChild>
               <Button
                 variant="ghost"
-                size="sm"
+                size="icon"
                 onClick={() => editor.chain().focus().redo().run()}
                 disabled={!editor.can().redo()}
                 aria-label="Redo"
@@ -484,7 +485,6 @@ const MarkdownEditor = () => {
             <TooltipContent>Rehacer</TooltipContent>
           </Tooltip>
         </div>
-
         {/* Editor Content */}
         <EditorContent
           editor={editor}

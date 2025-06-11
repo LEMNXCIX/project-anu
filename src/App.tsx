@@ -11,11 +11,12 @@ import {
   Minus,
   PanelRightOpen,
   PanelRightClose,
+  Home,
 } from "lucide-react";
 import { getCurrentWindow } from "@tauri-apps/api/window";
 import { VITE_ENVIRONMENT } from "./config/enviroment_config";
 import { Separator } from "@radix-ui/react-dropdown-menu";
-import { Routes, Route, useLocation } from "react-router-dom";
+import { Routes, Route, useLocation, useNavigate } from "react-router-dom";
 import {
   SidebarInset,
   SidebarProvider,
@@ -35,7 +36,12 @@ function Application() {
   const [loading, setLoading] = useState(true);
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
   const location = useLocation();
-
+  const navigate = useNavigate();
+  const goHomePage = () => {
+    if (window.location.pathname !== "/") {
+      navigate("/");
+    }
+  };
   useEffect(() => {
     const devMode = VITE_ENVIRONMENT === "DEV";
     console.log("isDevMode establecido:", devMode);
@@ -60,14 +66,29 @@ function Application() {
 
   console.log("Application renderizado");
   return (
-    <SidebarProvider className="mt-9">
+    <SidebarProvider className="mt-9 rounded-lg  ">
       <SidebarLeft />
-      <SidebarInset className="relative w-full">
+      <SidebarInset className="relative w-full  ">
         <div className="flex flex-col w-full">
           <header className="flex h-14 shrink-0 items-center gap-2 z-50">
-            <div className="flex flex-1 items-center titlebar" id="titlebar">
+            <div className="flex flex-1 items-center titlebar transition ease-in-out"  id="titlebar">
               <SidebarTrigger className="titlebar-button" />
+              {window.location.pathname !== "/" && (
+                <>
+                  <Button
+                    type="button"
+                    variant="ghost"
+                    size="sm"
+                    className="titlebar-button"
+                    onClick={() => goHomePage()}
+                  >
+                    <Home />
+                  </Button>
+                  <Separator className="mr-2 data-[orientation=vertical]:h-4" />
+                </>
+              )}
               <div data-tauri-drag-region className="titlebar-space" />
+
               {location.pathname.startsWith("/details-projects") && (
                 <>
                   <Button
@@ -77,9 +98,7 @@ function Application() {
                     className="titlebar-button"
                     onClick={() => setIsSidebarOpen(!isSidebarOpen)}
                     aria-label={
-                      isSidebarOpen
-                        ? "Close sidebar"
-                        : "Open sidebar"
+                      isSidebarOpen ? "Close sidebar" : "Open sidebar"
                     }
                   >
                     {isSidebarOpen ? <PanelRightClose /> : <PanelRightOpen />}
