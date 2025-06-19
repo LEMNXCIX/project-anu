@@ -15,6 +15,19 @@ diesel::table! {
 }
 
 diesel::table! {
+    notes (id) {
+        id -> Nullable<Integer>,
+        project_id -> Integer,
+        title -> Text,
+        content -> Nullable<Text>,
+        content_format -> Text,
+        status -> Text,
+        created_at -> Nullable<Timestamp>,
+        modified_at -> Nullable<Timestamp>,
+    }
+}
+
+diesel::table! {
     projects (id) {
         id -> Nullable<Integer>,
         name -> Text,
@@ -81,12 +94,14 @@ diesel::table! {
 
 diesel::joinable!(files -> projects (project_id));
 diesel::joinable!(files -> users (user_id));
+diesel::joinable!(notes -> projects (project_id));
 diesel::joinable!(projects -> users (user_id));
 diesel::joinable!(templates_types -> templates (template_id));
 diesel::joinable!(templates_types -> types (type_id));
 
 diesel::allow_tables_to_appear_in_same_query!(
     files,
+    notes,
     projects,
     templates,
     templates_types,
