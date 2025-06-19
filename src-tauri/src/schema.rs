@@ -1,13 +1,13 @@
 // @generated automatically by Diesel CLI.
 
 diesel::table! {
-    files (id) {
+    file_formats (id) {
         id -> Nullable<Integer>,
         name -> Text,
-        path -> Text,
-        project_id -> Integer,
-        user_id -> Integer,
-        template_type_id -> Nullable<Integer>,
+        extension -> Text,
+        mime_type -> Nullable<Text>,
+        editable -> Nullable<Bool>,
+        previewable -> Nullable<Bool>,
         status -> Text,
         created_at -> Nullable<Timestamp>,
         modified_at -> Nullable<Timestamp>,
@@ -15,12 +15,24 @@ diesel::table! {
 }
 
 diesel::table! {
-    notes (id) {
+    files (id) {
+        id -> Nullable<Integer>,
+        filename -> Text,
+        file_format_id -> Integer,
+        relative_path -> Text,
+        content -> Nullable<Text>,
+        is_template -> Nullable<Bool>,
+        status -> Text,
+        created_at -> Nullable<Timestamp>,
+        modified_at -> Nullable<Timestamp>,
+    }
+}
+
+diesel::table! {
+    project_files (id) {
         id -> Nullable<Integer>,
         project_id -> Integer,
-        title -> Text,
-        content -> Nullable<Text>,
-        content_format -> Text,
+        file_id -> Integer,
         status -> Text,
         created_at -> Nullable<Timestamp>,
         modified_at -> Nullable<Timestamp>,
@@ -44,7 +56,7 @@ diesel::table! {
 diesel::table! {
     templates (id) {
         id -> Nullable<Integer>,
-        path -> Text,
+        file_id -> Integer,
         name -> Text,
         #[sql_name = "type"]
         type_ -> Text,
@@ -55,16 +67,10 @@ diesel::table! {
 }
 
 diesel::table! {
-    templates_types (template_id, type_id) {
-        template_id -> Integer,
-        type_id -> Integer,
-    }
-}
-
-diesel::table! {
-    types (id) {
+    types_templates (id) {
         id -> Nullable<Integer>,
         name -> Text,
+        alias -> Text,
         description -> Nullable<Text>,
         status -> Text,
         created_at -> Nullable<Timestamp>,
@@ -92,20 +98,19 @@ diesel::table! {
     }
 }
 
-diesel::joinable!(files -> projects (project_id));
-diesel::joinable!(files -> users (user_id));
-diesel::joinable!(notes -> projects (project_id));
+diesel::joinable!(files -> file_formats (file_format_id));
+diesel::joinable!(project_files -> files (file_id));
+diesel::joinable!(project_files -> projects (project_id));
 diesel::joinable!(projects -> users (user_id));
-diesel::joinable!(templates_types -> templates (template_id));
-diesel::joinable!(templates_types -> types (type_id));
+diesel::joinable!(templates -> files (file_id));
 
 diesel::allow_tables_to_appear_in_same_query!(
+    file_formats,
     files,
-    notes,
+    project_files,
     projects,
     templates,
-    templates_types,
-    types,
+    types_templates,
     user_representatives,
     users,
 );

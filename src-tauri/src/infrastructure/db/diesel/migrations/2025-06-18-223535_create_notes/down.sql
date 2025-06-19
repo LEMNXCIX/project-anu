@@ -1,2 +1,1 @@
--- This file should undo anything in `up.sql`
-DELETE FROM notes;
+DROP TABLE IF EXISTS project_files;

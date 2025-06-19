@@ -2,8 +2,6 @@
 -- Eliminar un proyecto específico
 DELETE FROM projects;
 
--- Eliminar un archivo específico
-DELETE FROM files;
 
 -- Eliminar un template específico
 DELETE FROM templates;
@@ -11,5 +9,7 @@ DELETE FROM templates;
 -- Eliminar un tipo específico
 DELETE FROM types;
 
--- Eliminar una relación entre templates y tipos específica
-DELETE FROM templates_types;
+-- Eliminar un archivo específico
+DELETE FROM files;
+
+DROP TABLE IF EXISTS file_formats;

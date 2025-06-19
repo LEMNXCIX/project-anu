@@ -61,7 +61,7 @@ where
         let diesel_models = templates
             .filter(name.eq(template_name))
             .load::<DieselTemplate>(conn)
-            .map_err(|e| format!("Error al buscar datos: {}", e))?;
+            .map_err(|e| format!("Error al buscar por nombre: {}", e))?;
         let models: Vec<TemplateModel> = diesel_models.into_iter().map(|m| m.into()).collect();
         Ok(models.into_iter().map(model_to_entity).collect())
     }
