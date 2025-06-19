@@ -3,3 +3,4 @@ pub mod file_system;
 pub mod projects;
 pub mod templates;
 pub mod updater;
+pub mod notes;

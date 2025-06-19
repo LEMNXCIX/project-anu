@@ -2,3 +2,4 @@
 pub mod file_system_dto;
 pub use file_system_dto::*;
 pub mod template_dto;
+pub mod note_dto;
