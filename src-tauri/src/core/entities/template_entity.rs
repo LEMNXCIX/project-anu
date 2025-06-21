@@ -1,6 +1,4 @@
-
-// src/repository/core/entities/template.rs
-#[derive(Clone)]
+#[derive(Clone, Debug)]
 pub struct Template {
     pub name: String,
     pub file_id: i32,
@@ -9,13 +7,13 @@ pub struct Template {
 }
 
 impl Template {
-    pub fn new(name: String, file_id: i32, type_: String, status_value: String) -> Result<Self, String> {
-        if name.is_empty() {
-            return Err("El nombre no puede estar vacío".to_string());
+    pub fn new(name: String, file_id: i32, type_: String, status: String) -> Result<Self, String> {
+        if name.trim().is_empty() {
+            return Err("Name cannot be empty".into());
         }
-        if !["type1", "type2"].contains(&type_.as_str()) {
-            return Err("Tipo inválido".to_string());
+        if !["bug", "nuevo", "mant"].contains(&type_.as_str()) {
+            return Err(format!("Invalid type: {}", type_));
         }
-        Ok(Template { name, file_id, type_ , status: status_value })
+        Ok(Self { name, file_id, type_, status })
     }
 }

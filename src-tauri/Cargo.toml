@@ -34,7 +34,7 @@ tempfile = "3.0"
 tokio = { version = "1.0", features = ["full"] }
 mockall = "0.13"
 async-trait = "0.1"
-chrono = "0.4.40"
+chrono = { version = "0.4.40", features = ["serde"] }
 dotenvy = "0.15"
 
 [target.'cfg(not(any(target_os = "android", target_os = "ios")))'.dependencies]
