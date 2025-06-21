@@ -1,13 +1,8 @@
-// src/adapters/models/diesel/template.rs
-use crate::adapters::models::TemplateModel;
+use diesel::{Insertable, Queryable, QueryableByName, Selectable};
+use chrono::NaiveDateTime;
 use crate::schema::templates;
-use diesel::{
-    prelude::{Insertable, Queryable, QueryableByName, Selectable},
-    sqlite::Sqlite,
-};
 
 #[derive(Queryable, Insertable, Selectable, Debug, QueryableByName)]
-#[diesel(check_for_backend(Sqlite))]
 #[diesel(table_name = templates)]
 pub struct DieselTemplate {
     pub id: Option<i32>,
@@ -15,16 +10,16 @@ pub struct DieselTemplate {
     pub name: String,
     pub type_: String,
     pub status: String,
-    pub created_at: Option<chrono::NaiveDateTime>,
-    pub modified_at: Option<chrono::NaiveDateTime>,
+    pub created_at: Option<NaiveDateTime>,
+    pub modified_at: Option<NaiveDateTime>,
 }
 
-impl From<DieselTemplate> for TemplateModel {
+impl From<DieselTemplate> for crate::adapters::models::TemplateModel {
     fn from(diesel: DieselTemplate) -> Self {
-        TemplateModel {
+        Self {
             id: diesel.id,
-            name: diesel.name,
             file_id: diesel.file_id,
+            name: diesel.name,
             type_: diesel.type_,
             status: diesel.status,
             created_at: diesel.created_at,
@@ -33,12 +28,12 @@ impl From<DieselTemplate> for TemplateModel {
     }
 }
 
-impl From<TemplateModel> for DieselTemplate {
-    fn from(model: TemplateModel) -> Self {
-        DieselTemplate {
+impl From<crate::adapters::models::TemplateModel> for DieselTemplate {
+    fn from(model: crate::adapters::models::TemplateModel) -> Self {
+        Self {
             id: model.id,
-            name: model.name,
             file_id: model.file_id,
+            name: model.name,
             type_: model.type_,
             status: model.status,
             created_at: model.created_at,

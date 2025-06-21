@@ -1,9 +1,9 @@
-use crate::adapters::mappers::template_mapper::{entity_to_model, model_to_entity};
 use crate::adapters::models::diesel::DieselTemplate;
 use crate::adapters::models::TemplateModel;
 use crate::core::entities::template_entity::Template;
 use crate::core::repository::template_repository::TemplateRepository;
 use crate::infrastructure::db::connections::connection::ConnectionProvider;
+use crate::infrastructure::db::connections::sqlite::sqlite_connection::PoolConnection;
 use crate::schema::templates::dsl::*;
 use diesel::prelude::*;
 
@@ -16,53 +16,63 @@ where
     T::Connection: diesel::Connection,
 {
     pub fn new(connection_provider: T) -> Self {
-        DieselTemplateRepository {
-            connection_provider,
-        }
+        DieselTemplateRepository { connection_provider }
     }
 }
 
 impl<T: ConnectionProvider> TemplateRepository for DieselTemplateRepository<T>
 where
+    T: Send + Sync,
     T::Connection: diesel::Connection<Backend = diesel::sqlite::Sqlite>
-        + 'static
         + diesel::connection::LoadConnection,
-    templates: diesel::query_dsl::LoadQuery<'static, T::Connection, DieselTemplate>, // Para get_all
 {
     fn get_all(&mut self) -> Result<Vec<Template>, String> {
-        let conn = self.connection_provider.get_connection()?;
+        let mut conn = self.connection_provider.get_connection()?;
         let diesel_models = templates
-            .load::<DieselTemplate>(conn)
+            .load::<DieselTemplate>(&mut conn)
             .map_err(|e| format!("Error al cargar datos: {}", e))?;
-        let models: Vec<TemplateModel> = diesel_models.into_iter().map(|m| m.into()).collect();
-        Ok(models.into_iter().map(model_to_entity).collect())
+
+        Ok(diesel_models
+            .into_iter()
+            .map(|diesel| TemplateModel::from(diesel).into())
+            .collect())
     }
 
     fn create(&mut self, template: &Template) -> Result<(), String> {
-        let conn = self.connection_provider.get_connection()?;
-        let model = entity_to_model(template.clone());
+        let mut conn = self.connection_provider.get_connection()?;
+        let model: TemplateModel = template.clone().into();
         let diesel_model: DieselTemplate = model.into();
+
         diesel::insert_into(templates)
             .values(&diesel_model)
-            .execute(conn)
+            .execute(&mut conn)
             .map_err(|e| format!("Error al insertar datos: {}", e))?;
+
         Ok(())
     }
 
     fn delete(&mut self, template_id: i32) -> Result<(), String> {
-        let conn = self.connection_provider.get_connection()?;
+        let mut conn = self.connection_provider.get_connection()?;
         diesel::delete(templates.filter(id.eq(template_id)))
-            .execute(conn)
+            .execute(&mut conn)
             .map_err(|e| format!("Error al eliminar datos: {}", e))?;
         Ok(())
     }
+
     fn find_by_name(&mut self, template_name: &str) -> Result<Vec<Template>, String> {
-        let conn = self.connection_provider.get_connection()?;
+        let mut conn = self.connection_provider.get_connection()?;
         let diesel_models = templates
             .filter(name.eq(template_name))
-            .load::<DieselTemplate>(conn)
+            .load::<DieselTemplate>(&mut conn)
             .map_err(|e| format!("Error al buscar por nombre: {}", e))?;
-        let models: Vec<TemplateModel> = diesel_models.into_iter().map(|m| m.into()).collect();
-        Ok(models.into_iter().map(model_to_entity).collect())
+
+        Ok(diesel_models
+            .into_iter()
+            .map(|diesel| TemplateModel::from(diesel).into())
+            .collect())
     }
 }
+
+// Asegurar que DieselTemplateRepository sea Send + Sync
+unsafe impl<T: ConnectionProvider + Send + Sync> Send for DieselTemplateRepository<T> {}
+unsafe impl<T: ConnectionProvider + Sync> Sync for DieselTemplateRepository<T> {}

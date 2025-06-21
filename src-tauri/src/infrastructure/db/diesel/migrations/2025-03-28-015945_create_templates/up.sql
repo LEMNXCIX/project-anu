@@ -7,10 +7,15 @@ CREATE TABLE projects (
     url TEXT,
     path TEXT NOT NULL,
     user_id INTEGER NOT NULL,
-   status TEXT NOT NULL DEFAULT 'activo' CHECK (status IN ('activo', 'inactivo')),
+    type_project_id INTEGER NOT NULL,
+    priority_level INTEGER CHECK (priority_level BETWEEN 1 AND 10),
+    status TEXT NOT NULL DEFAULT 'activo' CHECK (status IN ('activo', 'inactivo')),
     created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
     modified_at DATETIME DEFAULT CURRENT_TIMESTAMP,
-    FOREIGN KEY (user_id) REFERENCES users (id)
+    start_date DATE DEFAULT CURRENT_DATE,
+    end_date DATE,
+    FOREIGN KEY (user_id) REFERENCES users (id),
+    FOREIGN KEY (type_project_id) REFERENCES types_projects (id)
 );
 -- Tabla templates
 CREATE TABLE templates (
@@ -25,7 +30,7 @@ CREATE TABLE templates (
 );
 
 -- Tabla types
-CREATE TABLE types_templates (
+CREATE TABLE types_projects (
     id INTEGER PRIMARY KEY,
     name TEXT NOT NULL,
     alias TEXT NOT NULL,
@@ -36,7 +41,7 @@ CREATE TABLE types_templates (
 );
 
 -- Tabla templates_types
-INSERT INTO types_templates (alias, name, description)
+INSERT INTO types_projects (alias, name, description)
 VALUES
     ('bug', 'Bug', 'Plantilla destinada a reportar errores funcionales o técnicos dentro del proyecto.'),
     ('nuevo', 'Nuevo', 'Plantilla para registrar nuevas características, módulos o ideas a implementar.'),
@@ -66,9 +71,9 @@ CREATE TABLE files (
     file_format_id INTEGER NOT NULL,
     relative_path TEXT NOT NULL,
     content TEXT,
-    is_template BOOLEAN DEFAULT false,
     status TEXT NOT NULL DEFAULT 'activo' CHECK (status IN ('activo', 'inactivo')),
     created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
     modified_at DATETIME DEFAULT CURRENT_TIMESTAMP,
     FOREIGN KEY (file_format_id) REFERENCES file_formats(id)
 );
+

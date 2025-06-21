@@ -21,7 +21,6 @@ diesel::table! {
         file_format_id -> Integer,
         relative_path -> Text,
         content -> Nullable<Text>,
-        is_template -> Nullable<Bool>,
         status -> Text,
         created_at -> Nullable<Timestamp>,
         modified_at -> Nullable<Timestamp>,
@@ -47,9 +46,13 @@ diesel::table! {
         url -> Nullable<Text>,
         path -> Text,
         user_id -> Integer,
+        type_project_id -> Integer,
+        priority_level -> Nullable<Integer>,
         status -> Text,
         created_at -> Nullable<Timestamp>,
         modified_at -> Nullable<Timestamp>,
+        start_date -> Nullable<Date>,
+        end_date -> Nullable<Date>,
     }
 }
 
@@ -67,7 +70,7 @@ diesel::table! {
 }
 
 diesel::table! {
-    types_templates (id) {
+    types_projects (id) {
         id -> Nullable<Integer>,
         name -> Text,
         alias -> Text,
@@ -79,9 +82,11 @@ diesel::table! {
 }
 
 diesel::table! {
-    user_representatives (user_id, representative_id) {
+    user_relationships (id) {
+        id -> Nullable<Integer>,
         user_id -> Integer,
-        representative_id -> Integer,
+        related_user_id -> Integer,
+        relacion -> Text,
     }
 }
 
@@ -93,6 +98,7 @@ diesel::table! {
         main_path -> Nullable<Text>,
         user_type -> Text,
         status -> Text,
+        email -> Text,
         created_at -> Nullable<Timestamp>,
         modified_at -> Nullable<Timestamp>,
     }
@@ -101,6 +107,7 @@ diesel::table! {
 diesel::joinable!(files -> file_formats (file_format_id));
 diesel::joinable!(project_files -> files (file_id));
 diesel::joinable!(project_files -> projects (project_id));
+diesel::joinable!(projects -> types_projects (type_project_id));
 diesel::joinable!(projects -> users (user_id));
 diesel::joinable!(templates -> files (file_id));
 
@@ -110,7 +117,7 @@ diesel::allow_tables_to_appear_in_same_query!(
     project_files,
     projects,
     templates,
-    types_templates,
-    user_representatives,
+    types_projects,
+    user_relationships,
     users,
 );

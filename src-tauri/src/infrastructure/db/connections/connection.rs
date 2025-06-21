@@ -1,4 +1,6 @@
+use diesel::Connection;
+
 pub trait ConnectionProvider {
-    type Connection; // Add LoadConnection
-    fn get_connection(&mut self) -> Result<&mut Self::Connection, String>; // Ahora mutable
+    type Connection: Connection;
+    fn get_connection(&self) -> Result<Self::Connection, String>;
 }
