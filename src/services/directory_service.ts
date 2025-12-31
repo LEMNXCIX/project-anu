@@ -3,14 +3,13 @@ import { TauriResponse } from "@/types/tauri_response_types.d";
 import { tauriService } from "@/services/tauri_service";
 
 export const DirectoryService = {
-  async createDirectory(name: string): Promise<any> {},
+  async createDirectory(name: string): Promise<any> { },
 
   async listItemsByDirectory(name?: string): Promise<DirEntry[]> {
     try {
       if (!name) {
         name = "";
       }
-      console.log(name)
       let response = (await tauriService.exec_tauri_command(
         "list_directory_command",
         {

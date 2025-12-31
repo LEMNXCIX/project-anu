@@ -17,9 +17,8 @@ export function CustomRightSidebar({
 
   return (
     <div
-      className={`fixed top-9 right-0 rounded-l-lg h-[calc(100svh-36px)] w-64 border-l text-accent-foreground/70  bg-sidebar shadow-lg transform transition-transform duration-300 ease-in-out z-40 ${
-        isOpen ? "translate-x-0" : "translate-x-full"
-      }`}
+      className={`fixed top-9 right-0 rounded-l-lg h-[calc(100svh-36px)] w-64 border-l text-accent-foreground/70  bg-sidebar shadow-lg transform transition-transform duration-300 ease-in-out z-40 ${isOpen ? "translate-x-0" : "translate-x-full"
+        }`}
       onClick={handleSidebarClick} // Manejamos los clics dentro del sidebar
     >
       <div className="flex flex-col h-full">
@@ -42,7 +41,6 @@ export function CustomRightSidebar({
         </div>
         <div className="p-4 border-t shrink-0">
           <Button
-            onClick={() => console.log("Crear nuevo calendario")}
             className="w-full"
             aria-label="Create new calendar"
           >

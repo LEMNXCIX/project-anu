@@ -14,14 +14,13 @@ export const useAppContex = () => {
     )) as TauriResponse<any>;
 
     let entries = res.data;
-    console.log('dsddsd')
     let proyects = await DirectoryService.listItemsByDirectory(
       entries.ruta_base
     );
     if (proyects) {
       entries = { ...entries, proyectos: proyects };
     }
-    
+
     dispatch({ type: "SET_ITEMS", payload: entries });
   }, [dispatch]);
 

@@ -25,7 +25,6 @@ const NavMain = memo(
         navigate("/");
       }
     };
-    console.log("nav_mains");
     return (
       <SidebarMenu>
         {items.map((item) => (

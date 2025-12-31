@@ -119,10 +119,8 @@ const MarkdownEditor = () => {
         validate: (href) => {
           try {
             new URL(href);
-            console.log("URL válida detectada por LinkExtension:", href);
             return true;
           } catch {
-            console.warn("URL inválida:", href);
             return false;
           }
         },
@@ -135,10 +133,8 @@ const MarkdownEditor = () => {
       },
     },
     onCreate({ editor }) {
-      console.log("Editor creado. Contenido inicial:", editor.getHTML());
     },
     onUpdate({ editor }) {
-      console.log("Contenido actualizado:", editor.getHTML());
     },
   });
 
@@ -333,13 +329,8 @@ const MarkdownEditor = () => {
                     size="icon"
                     onClick={() => {
                       if (editor.isActive("link")) {
-                        console.log("Eliminando enlace existente...");
                         editor.chain().focus().unsetLink().run();
                         setIsLinkModalOpen(false);
-                        console.log(
-                          "Contenido después de eliminar enlace:",
-                          editor.getHTML()
-                        );
                       }
                     }}
                     aria-label={
@@ -382,19 +373,9 @@ const MarkdownEditor = () => {
                     </Button>
                     <Button
                       onClick={() => {
-                        console.log(
-                          "Insertando enlace con URL:",
-                          linkUrl,
-                          "y alias:",
-                          linkAlias
-                        );
                         if (linkUrl) {
                           const normalizedUrl = linkUrl.trim();
                           const aliasText = linkAlias.trim() || normalizedUrl; // Usamos el alias si existe, si no, la URL
-                          console.log(
-                            "Contenido antes de insertar:",
-                            editor.getHTML()
-                          );
                           const selectedText =
                             editor.state.selection.content().content.firstChild
                               ?.textContent || "";
@@ -427,20 +408,12 @@ const MarkdownEditor = () => {
                               .run();
                           }
 
-                          console.log(
-                            "Estado del enlace después de insertar:",
-                            editor.isActive("link")
-                          );
-                          console.log(
-                            "Contenido después de insertar:",
-                            editor.getHTML()
-                          );
                         } else {
-                          console.log("No se ingresó una URL.");
+
                         }
                         setIsLinkModalOpen(false);
                         setLinkUrl("");
-                        setLinkAlias(""); // Limpiamos el alias después de insertar
+                        setLinkAlias("");
                       }}
                     >
                       Insertar

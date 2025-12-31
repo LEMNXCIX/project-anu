@@ -44,7 +44,6 @@ function Application() {
   };
   useEffect(() => {
     const devMode = VITE_ENVIRONMENT === "DEV";
-    console.log("isDevMode establecido:", devMode);
     setLoading(false);
     userConfig();
     const titlebar = document.getElementById("titlebar");
@@ -52,26 +51,20 @@ function Application() {
     const btnMaximize = document.getElementById("titlebar-max");
     const btnClose = document.getElementById("titlebar-close");
     return () => {
-      if (titlebar) titlebar.removeEventListener("mousedown", () => {});
-      if (btnMinimize) btnMinimize.removeEventListener("click", () => {});
-      if (btnMaximize) btnMaximize.removeEventListener("click", () => {});
-      if (btnClose) btnClose.removeEventListener("click", () => {});
+      if (titlebar) titlebar.removeEventListener("mousedown", () => { });
+      if (btnMinimize) btnMinimize.removeEventListener("click", () => { });
+      if (btnMaximize) btnMaximize.removeEventListener("click", () => { });
+      if (btnClose) btnClose.removeEventListener("click", () => { });
     };
   }, []);
 
-  // Depuramos el estado de isSidebarOpen
-  useEffect(() => {
-    console.log("isSidebarOpen cambió:", isSidebarOpen);
-  }, [isSidebarOpen]);
-
-  console.log("Application renderizado");
   return (
     <SidebarProvider className="mt-9 rounded-lg  ">
       <SidebarLeft />
       <SidebarInset className="relative w-full  ">
         <div className="flex flex-col w-full">
           <header className="flex h-14 shrink-0 items-center gap-2 z-50">
-            <div className="flex flex-1 items-center titlebar transition ease-in-out"  id="titlebar">
+            <div className="flex flex-1 items-center titlebar transition ease-in-out" id="titlebar">
               <SidebarTrigger className="titlebar-button" />
               {window.location.pathname !== "/" && (
                 <>

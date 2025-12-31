@@ -11,7 +11,6 @@ export const useListDirectory = () => {
 
   const listDirectory = useCallback(
     async (path?: string) => {
-      console.log(path);
       const res = (await tauriService.exec_tauri_command(
         "list_directory_command",
         { name: path ? path : state.config_user.ruta_base }
@@ -27,9 +26,6 @@ export const useListDirectory = () => {
     directory?: DirEntry,
     addHistorial: boolean = true
   ) => {
-    console.log(addHistorial)
-    console.log("setCurrenteDirectory" + addHistorial
-    );
     if (directory) {
       dispatch({ type: "SET_CURRENT_DIRECTORY", payload: directory });
       addHistorial && dispatch({ type: "ADD_HISTORIAL_PATH", payload: directory });

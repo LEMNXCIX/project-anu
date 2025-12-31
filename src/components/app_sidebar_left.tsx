@@ -19,8 +19,6 @@ function SidebarLeftComponent({
   const { state: appContex } = useApp();
   const { setTheme, theme } = useTheme();
   const toggleTheme = () => {
-    console.log("sdd");
-    console.log(theme);
     setTheme(theme === "dark" ? "light" : "dark");
   };
 
@@ -55,7 +53,6 @@ function SidebarLeftComponent({
     [appContex?.config_user?.proyectos]
   );
 
-  console.log("SidebarLeft renderizado");
   return (
     <Sidebar variant="sidebar" className="border-r-0" {...props}>
       <SidebarHeader>
@@ -64,7 +61,7 @@ function SidebarLeftComponent({
             variant="ghost"
             size="icon"
             className="text-4xl m-2 font-bold"
-            onDoubleClick={()=>toggleTheme()}
+            onDoubleClick={() => toggleTheme()}
           >
             𒀭
           </Button>
